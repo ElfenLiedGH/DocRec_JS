@@ -1,0 +1,1077 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.22" id="1">
+    <property name="createdBy">Проектировщик BIRT Eclipse - версия 2.6.1.v20100902, компоновка &lt;2.6.1.v20100915-1750></property>
+    <html-property name="description">Шаблон для отчета Birt новый</html-property>
+    <property name="units">mm</property>
+    <property name="bidiLayoutOrientation">ltr</property>
+    <property name="imageDPI">96</property>
+    <data-sources>
+        <oda-data-source extensionID="org.eclipse.birt.report.data.oda.stack" name="Отчет" id="189">
+            <property name="FILELIST">D:\Bases\Inst\Stack.Srv\Bin\0\data1.xml</property>
+            <property name="MAINTAG">Отчет</property>
+        </oda-data-source>
+        <oda-data-source extensionID="org.eclipse.birt.report.data.oda.stack" name="Таблица" id="1291">
+            <property name="FILELIST">D:\Bases\Inst\Stack.Srv\Bin\0\data1.xml</property>
+            <property name="MAINTAG">Таблица</property>
+        </oda-data-source>
+    </data-sources>
+    <data-sets>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.stack.dataSet" name="Отчет" id="190">
+            <property name="nullsOrdering">nulls lowest</property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">Название</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">Название1</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">Название2</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">Название3</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">Название4</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">Название5</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">Описание</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">Артикул</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">ПодписьОтчета</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Отчет</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">Название</property>
+                    <property name="nativeName">Название</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">Название1</property>
+                    <property name="nativeName">Название1</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">Название2</property>
+                    <property name="nativeName">Название2</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">Название3</property>
+                    <property name="nativeName">Название3</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">Название4</property>
+                    <property name="nativeName">Название4</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">Название5</property>
+                    <property name="nativeName">Название5</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">Описание</property>
+                    <property name="nativeName">Описание</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">Артикул</property>
+                    <property name="nativeName">Артикул</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">ПодписьОтчета</property>
+                    <property name="nativeName">ПодписьОтчета</property>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[Select Название,Название1,Название2,Название3,Название4,Название5, Описание, Артикул, ПодписьОтчета  from ]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.stack.dataSet" name="Таблица" id="191">
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">Столбец1</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">Столбец2</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">Столбец3</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">Столбец4</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">Столбец5</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Таблица</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">Столбец1</property>
+                    <property name="nativeName">Столбец1</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">Столбец2</property>
+                    <property name="nativeName">Столбец2</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">Столбец3</property>
+                    <property name="nativeName">Столбец3</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">Столбец4</property>
+                    <property name="nativeName">Столбец4</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">Столбец5</property>
+                    <property name="nativeName">Столбец5</property>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[Select Столбец1,Столбец2,Столбец3,Столбец4,Столбец5 From]]></xml-property>
+        </oda-data-set>
+    </data-sets>
+    <styles>
+        <style name="report" id="4">
+            <property name="fontFamily">"Arial"</property>
+            <property name="fontSize">10pt</property>
+        </style>
+        <style name="crosstab-cell" id="5">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+        <style name="crosstab" id="6">
+            <property name="fontFamily">"Arial"</property>
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+            <property name="paddingTop">0pt</property>
+            <property name="paddingLeft">0pt</property>
+            <property name="paddingBottom">0pt</property>
+            <property name="paddingRight">0pt</property>
+        </style>
+        <style name="label" id="1229">
+            <property name="fontFamily">"Arial"</property>
+            <property name="paddingTop">0pt</property>
+            <property name="paddingLeft">0pt</property>
+            <property name="paddingBottom">0pt</property>
+            <property name="paddingRight">0pt</property>
+        </style>
+        <style name="table-detail-cell" id="1230">
+            <property name="fontFamily">"Arial"</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">thin</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">thin</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">thin</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">thin</property>
+            <property name="paddingTop">0pt</property>
+            <property name="paddingLeft">0pt</property>
+            <property name="paddingBottom">0pt</property>
+            <property name="paddingRight">0pt</property>
+        </style>
+        <style name="table-footer-cell" id="1231">
+            <property name="fontFamily">"Arial"</property>
+            <property name="fontStyle">oblique</property>
+            <property name="borderBottomStyle">none</property>
+            <property name="borderBottomWidth">thin</property>
+            <property name="borderLeftStyle">none</property>
+            <property name="borderLeftWidth">thin</property>
+            <property name="borderRightStyle">none</property>
+            <property name="borderRightWidth">thin</property>
+            <property name="borderTopStyle">none</property>
+            <property name="borderTopWidth">thin</property>
+            <property name="paddingTop">0pt</property>
+            <property name="paddingLeft">0pt</property>
+            <property name="paddingBottom">0pt</property>
+            <property name="paddingRight">0pt</property>
+        </style>
+        <style name="table-footer-cell-with_frame" id="1297">
+            <property name="fontFamily">"Arial"</property>
+            <property name="fontStyle">oblique</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">thin</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">thin</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">thin</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">thin</property>
+            <property name="paddingTop">0pt</property>
+            <property name="paddingLeft">0pt</property>
+            <property name="paddingBottom">0pt</property>
+            <property name="paddingRight">0pt</property>
+        </style>
+        <style name="table-header" id="1232">
+            <property name="fontFamily">"Arial"</property>
+            <property name="fontSize">10pt</property>
+            <property name="fontWeight">bolder</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">thin</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">thin</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">thin</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">thin</property>
+            <property name="paddingTop">0pt</property>
+            <property name="paddingLeft">0pt</property>
+            <property name="paddingBottom">0pt</property>
+            <property name="paddingRight">0pt</property>
+        </style>
+        <style name="data" id="1233">
+            <property name="fontFamily">"Arial"</property>
+            <property name="paddingTop">0pt</property>
+            <property name="paddingLeft">1pt</property>
+            <property name="paddingBottom">0pt</property>
+            <property name="paddingRight">1pt</property>
+        </style>
+        <style name="grid" id="1234">
+            <property name="fontFamily">"Arial"</property>
+            <property name="paddingTop">0pt</property>
+            <property name="paddingLeft">0pt</property>
+            <property name="paddingBottom">0pt</property>
+            <property name="paddingRight">0pt</property>
+        </style>
+        <style name="page" id="1235">
+            <property name="fontFamily">"Arial"</property>
+            <property name="paddingTop">0pt</property>
+            <property name="paddingLeft">0pt</property>
+            <property name="paddingBottom">0pt</property>
+            <property name="paddingRight">0pt</property>
+        </style>
+        <style name="table" id="1236">
+            <property name="fontFamily">"Arial"</property>
+            <property name="borderBottomStyle">none</property>
+            <property name="borderBottomWidth">thin</property>
+            <property name="borderLeftStyle">none</property>
+            <property name="borderLeftWidth">thin</property>
+            <property name="borderRightStyle">none</property>
+            <property name="borderRightWidth">thin</property>
+            <property name="borderTopStyle">none</property>
+            <property name="borderTopWidth">thin</property>
+            <property name="paddingTop">0pt</property>
+            <property name="paddingLeft">0pt</property>
+            <property name="paddingBottom">0pt</property>
+            <property name="paddingRight">0pt</property>
+        </style>
+    </styles>
+    <page-setup>
+        <simple-master-page name="Simple MasterPage" id="2">
+            <property name="type">a4</property>
+            <property name="topMargin">0.7cm</property>
+            <property name="leftMargin">1.75cm</property>
+            <property name="bottomMargin">0.7cm</property>
+            <property name="rightMargin">1cm</property>
+            <property name="fontFamily">monospace</property>
+            <property name="fontVariant">normal</property>
+            <property name="showHeaderOnFirst">false</property>
+            <property name="showFooterOnLast">true</property>
+            <property name="headerHeight">25px</property>
+            <property name="footerHeight">15px</property>
+            <page-header>
+                <grid id="1107">
+                    <property name="width">7.135416666666667in</property>
+                    <column id="1128">
+                        <property name="width">2.4583333333333335in</property>
+                    </column>
+                    <column id="1130">
+                        <property name="width">4.447916666666667in</property>
+                    </column>
+                    <column id="1108">
+                        <property name="width">0.22916666666666666in</property>
+                    </column>
+                    <row id="1111">
+                        <property name="height">20px</property>
+                        <property name="fontFamily">"Arial"</property>
+                        <property name="fontSize">8pt</property>
+                        <cell id="1127">
+                            <property name="colSpan">2</property>
+                            <property name="rowSpan">1</property>
+                            <property name="textAlign">right</property>
+                            <data id="1175">
+                                <property name="paddingRight">10pt</property>
+                                <property name="textAlign">left</property>
+                                <property name="display">inline</property>
+                                <property name="dataSet">Отчет</property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">НазваниеОтчета</property>
+                                        <expression name="expression" type="javascript">"Протокол "+dataSetRow["Название"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="resultSetColumn">НазваниеОтчета</property>
+                            </data>
+                            <label id="1122">
+                                <property name="fontFamily">"Arial"</property>
+                                <property name="fontSize">8pt</property>
+                                <property name="paddingRight">3pt</property>
+                                <property name="textAlign">center</property>
+                                <property name="display">inline</property>
+                                <text-property name="text">стр</text-property>
+                            </label>
+                            <auto-text id="1113">
+                                <property name="fontFamily">"Arial"</property>
+                                <property name="fontSize">8pt</property>
+                                <property name="paddingRight">3pt</property>
+                                <property name="textAlign">center</property>
+                                <property name="display">inline</property>
+                                <property name="type">page-number</property>
+                            </auto-text>
+                            <text id="1115">
+                                <property name="fontFamily">"Arial"</property>
+                                <property name="fontSize">8pt</property>
+                                <property name="textAlign">center</property>
+                                <property name="display">inline</property>
+                                <property name="contentType">plain</property>
+                                <text-property name="content"><![CDATA[из
+]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="1112">
+                            <property name="textAlign">right</property>
+                            <auto-text id="1131">
+                                <property name="textAlign">right</property>
+                                <property name="display">inline</property>
+                                <property name="pushDown">false</property>
+                                <property name="type">total-page</property>
+                            </auto-text>
+                        </cell>
+                    </row>
+                </grid>
+            </page-header>
+            <page-footer>
+                <grid id="1148">
+                    <column id="1149"/>
+                    <column id="1150"/>
+                    <column id="1151"/>
+                    <row id="1152">
+                        <property name="fontFamily">"Arial"</property>
+                        <cell id="1153">
+                            <property name="colSpan">3</property>
+                            <property name="rowSpan">1</property>
+                            <property name="fontFamily">"Arial"</property>
+                            <property name="fontSize">6pt</property>
+                            <property name="textAlign">left</property>
+                            <data id="1123">
+                                <property name="backgroundColor">#FFFFFF</property>
+                                <property name="fontSize">6pt</property>
+                                <property name="textAlign">left</property>
+                                <property name="display">inline</property>
+                                <property name="dataSet">Отчет</property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">ПодписьОтчета</property>
+                                        <expression name="expression" type="javascript">dataSetRow["ПодписьОтчета"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="resultSetColumn">ПодписьОтчета</property>
+                            </data>
+                        </cell>
+                    </row>
+                </grid>
+            </page-footer>
+        </simple-master-page>
+    </page-setup>
+    <body>
+        <grid id="7">
+            <property name="fontFamily">"Arial"</property>
+            <property name="canShrink">false</property>
+            <property name="width">7.177083333333333in</property>
+            <property name="dataSet">Отчет</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">Название</property>
+                    <text-property name="displayName">Название</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["Название"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">Название1</property>
+                    <text-property name="displayName">Название1</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["Название1"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">Название2</property>
+                    <text-property name="displayName">Название2</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["Название2"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">Название3</property>
+                    <text-property name="displayName">Название3</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["Название3"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">Название4</property>
+                    <text-property name="displayName">Название4</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["Название4"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">Название5</property>
+                    <text-property name="displayName">Название5</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["Название5"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">Описание</property>
+                    <text-property name="displayName">Описание</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["Описание"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">Артикул</property>
+                    <text-property name="displayName">Артикул</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["Артикул"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">ПодписьОтчета</property>
+                    <text-property name="displayName">ПодписьОтчета</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ПодписьОтчета"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <structure name="toc"/>
+            <column id="8">
+                <property name="width">1.2291666666666667in</property>
+            </column>
+            <column id="9">
+                <property name="width">1.2291666666666667in</property>
+            </column>
+            <column id="10">
+                <property name="width">1.2291666666666667in</property>
+            </column>
+            <column id="11">
+                <property name="width">1.21875in</property>
+            </column>
+            <column id="12">
+                <property name="width">1.4583333333333333in</property>
+            </column>
+            <column id="1173">
+                <property name="width">0.8125in</property>
+            </column>
+            <row id="19">
+                <property name="height">35px</property>
+                <cell id="20">
+                    <property name="colSpan">5</property>
+                    <property name="rowSpan">1</property>
+                    <property name="paddingTop">0pt</property>
+                    <property name="paddingLeft">0pt</property>
+                    <property name="paddingBottom">0pt</property>
+                    <property name="paddingRight">0pt</property>
+                    <property name="verticalAlign">top</property>
+                    <label id="1305">
+                        <property name="fontSize">16pt</property>
+                        <property name="fontWeight">bold</property>
+                        <text-property name="text">Протокол</text-property>
+                    </label>
+                </cell>
+                <cell id="1192">
+                    <property name="paddingTop">0pt</property>
+                    <property name="paddingLeft">0pt</property>
+                    <property name="paddingBottom">0pt</property>
+                    <property name="paddingRight">0pt</property>
+                    <property name="textAlign">right</property>
+                    <property name="verticalAlign">top</property>
+                    <data id="193">
+                        <property name="fontSize">8pt</property>
+                        <property name="textAlign">right</property>
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">Артикул</property>
+                    </data>
+                </cell>
+            </row>
+            <row id="1298">
+                <property name="height">11.641666666666666mm</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                    </structure>
+                </list-property>
+                <cell id="1299">
+                    <property name="colSpan">6</property>
+                    <property name="rowSpan">1</property>
+                    <property name="paddingTop">0pt</property>
+                    <property name="paddingLeft">0pt</property>
+                    <property name="paddingBottom">0pt</property>
+                    <property name="paddingRight">0pt</property>
+                    <property name="verticalAlign">top</property>
+                    <data id="1313">
+                        <property name="fontSize">12pt</property>
+                        <property name="resultSetColumn">Название</property>
+                    </data>
+                </cell>
+            </row>
+            <row id="986">
+                <property name="height">11.641666666666666mm</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">row["Описание"] == ""</expression>
+                    </structure>
+                </list-property>
+                <cell id="987">
+                    <property name="colSpan">6</property>
+                    <property name="rowSpan">1</property>
+                    <property name="paddingTop">0pt</property>
+                    <property name="paddingLeft">0pt</property>
+                    <property name="paddingBottom">0pt</property>
+                    <property name="paddingRight">0pt</property>
+                    <property name="verticalAlign">top</property>
+                    <data id="1314">
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["Описание"]==''</expression>
+                            </structure>
+                        </list-property>
+                        <property name="resultSetColumn">Описание</property>
+                    </data>
+                </cell>
+            </row>
+            <row id="43">
+                <property name="paddingTop">5pt</property>
+                <property name="pageBreakAfter">auto</property>
+                <property name="pageBreakBefore">auto</property>
+                <property name="pageBreakInside">auto</property>
+                <cell id="44">
+                    <property name="colSpan">6</property>
+                    <property name="rowSpan">1</property>
+                    <property name="paddingTop">0pt</property>
+                    <property name="paddingLeft">0pt</property>
+                    <property name="paddingBottom">0pt</property>
+                    <property name="paddingRight">0pt</property>
+                    <property name="verticalAlign">top</property>
+                    <table id="143">
+                        <property name="paddingTop">5pt</property>
+                        <property name="width">180.975mm</property>
+                        <property name="dataSet">Таблица</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">Название1</property>
+                                <text-property name="displayName">Название1</text-property>
+                                <expression name="expression" type="javascript">row._outer["Название1"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Название2</property>
+                                <text-property name="displayName">Название2</text-property>
+                                <expression name="expression" type="javascript">row._outer["Название2"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Название3</property>
+                                <text-property name="displayName">Название3</text-property>
+                                <expression name="expression" type="javascript">row._outer["Название3"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Название4</property>
+                                <text-property name="displayName">Название4</text-property>
+                                <expression name="expression" type="javascript">row._outer["Название4"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Название5</property>
+                                <text-property name="displayName">Название5</text-property>
+                                <expression name="expression" type="javascript">row._outer["Название5"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Столбец1</property>
+                                <text-property name="displayName">Столбец1</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["Столбец1"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Столбец2</property>
+                                <text-property name="displayName">Столбец2</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["Столбец2"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Столбец3</property>
+                                <text-property name="displayName">Столбец3</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["Столбец3"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Столбец4</property>
+                                <text-property name="displayName">Столбец4</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["Столбец4"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Столбец5</property>
+                                <text-property name="displayName">Столбец5</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["Столбец5"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <structure name="toc"/>
+                        <column id="180">
+                            <property name="width">10.054166666666667mm</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row._outer["Название1"]==""</expression>
+                                </structure>
+                            </list-property>
+                        </column>
+                        <column id="181">
+                            <property name="width">18.25625mm</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row._outer["Название2"]==""</expression>
+                                </structure>
+                            </list-property>
+                        </column>
+                        <column id="1006">
+                            <property name="width">48.41875mm</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row._outer["Название3"]==""</expression>
+                                </structure>
+                            </list-property>
+                        </column>
+                        <column id="182">
+                            <property name="width">37.041666666666664mm</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row._outer["Название4"]==""</expression>
+                                </structure>
+                            </list-property>
+                        </column>
+                        <column id="1310">
+                            <property name="width">67.20416666666667mm</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row._outer["Название5"]==""</expression>
+                                </structure>
+                            </list-property>
+                        </column>
+                        <header>
+                            <row id="144">
+                                <property name="height">100%</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="textAlign">center</property>
+                                <cell id="145">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <property name="verticalAlign">top</property>
+                                    <data id="1312">
+                                        <property name="resultSetColumn">Название1</property>
+                                    </data>
+                                </cell>
+                                <cell id="146">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <property name="verticalAlign">top</property>
+                                    <data id="1315">
+                                        <property name="resultSetColumn">Название2</property>
+                                    </data>
+                                </cell>
+                                <cell id="1004">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <property name="verticalAlign">top</property>
+                                    <data id="1316">
+                                        <property name="resultSetColumn">Название3</property>
+                                    </data>
+                                </cell>
+                                <cell id="147">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <property name="verticalAlign">top</property>
+                                    <data id="1317">
+                                        <property name="resultSetColumn">Название4</property>
+                                    </data>
+                                </cell>
+                                <cell id="1307">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <property name="verticalAlign">top</property>
+                                    <data id="1318">
+                                        <property name="resultSetColumn">Название5</property>
+                                    </data>
+                                </cell>
+                            </row>
+                            <row id="1072">
+                                <property name="height">100%</property>
+                                <property name="paddingTop">0pt</property>
+                                <property name="paddingBottom">0pt</property>
+                                <property name="orphans">0</property>
+                                <property name="widows">0</property>
+                                <cell id="1073">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <property name="verticalAlign">top</property>
+                                    <label id="1060">
+                                        <property name="fontSize">6pt</property>
+                                        <property name="paddingTop">0pt</property>
+                                        <property name="paddingBottom">0pt</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="display">block</property>
+                                        <property name="pushDown">true</property>
+                                        <text-property name="text">1</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="1074">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <property name="verticalAlign">top</property>
+                                    <label id="1024">
+                                        <property name="fontSize">6pt</property>
+                                        <property name="paddingTop">0pt</property>
+                                        <property name="paddingBottom">0pt</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="display">block</property>
+                                        <property name="pushDown">true</property>
+                                        <text-property name="text">2</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="1075">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <property name="verticalAlign">top</property>
+                                    <label id="1025">
+                                        <property name="fontSize">6pt</property>
+                                        <property name="paddingTop">0pt</property>
+                                        <property name="paddingBottom">0pt</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="display">block</property>
+                                        <property name="pushDown">true</property>
+                                        <text-property name="text">3</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="1076">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <property name="verticalAlign">top</property>
+                                    <label id="1026">
+                                        <property name="fontSize">6pt</property>
+                                        <property name="paddingTop">0pt</property>
+                                        <property name="paddingBottom">0pt</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="display">block</property>
+                                        <property name="pushDown">true</property>
+                                        <text-property name="text">4</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="1308">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <property name="verticalAlign">top</property>
+                                    <label id="1311">
+                                        <property name="fontSize">6pt</property>
+                                        <property name="textAlign">center</property>
+                                        <text-property name="text">5</text-property>
+                                    </label>
+                                </cell>
+                            </row>
+                        </header>
+                        <detail>
+                            <row id="150">
+                                <property name="height">100%</property>
+                                <property name="pageBreakBefore">avoid</property>
+                                <property name="pageBreakInside">auto</property>
+                                <cell id="151">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <property name="textAlign">left</property>
+                                    <property name="verticalAlign">top</property>
+                                    <data id="1319">
+                                        <property name="fontSize">7pt</property>
+                                        <property name="resultSetColumn">Столбец1</property>
+                                    </data>
+                                </cell>
+                                <cell id="152">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <property name="textAlign">center</property>
+                                    <property name="verticalAlign">top</property>
+                                    <data id="1320">
+                                        <property name="fontSize">7pt</property>
+                                        <property name="resultSetColumn">Столбец2</property>
+                                    </data>
+                                </cell>
+                                <cell id="1005">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <property name="textAlign">left</property>
+                                    <property name="verticalAlign">top</property>
+                                    <data id="1321">
+                                        <property name="fontSize">7pt</property>
+                                        <property name="resultSetColumn">Столбец3</property>
+                                    </data>
+                                </cell>
+                                <cell id="153">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <property name="textAlign">left</property>
+                                    <property name="verticalAlign">top</property>
+                                    <data id="1322">
+                                        <property name="fontSize">7pt</property>
+                                        <property name="resultSetColumn">Столбец4</property>
+                                    </data>
+                                </cell>
+                                <cell id="1309">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <property name="textAlign">left</property>
+                                    <property name="verticalAlign">top</property>
+                                    <data id="1323">
+                                        <property name="fontSize">7pt</property>
+                                        <property name="resultSetColumn">Столбец5</property>
+                                    </data>
+                                </cell>
+                            </row>
+                        </detail>
+                    </table>
+                </cell>
+            </row>
+        </grid>
+    </body>
+</report>

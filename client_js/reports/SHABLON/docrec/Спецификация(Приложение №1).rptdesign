@@ -1,0 +1,1389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.22" id="1">
+    <property name="createdBy">Проектировщик BIRT Eclipse - версия 2.6.1.v20100902, компоновка &lt;2.6.1.v20100915-1750></property>
+    <property name="units">cm</property>
+    <list-property name="propertyBindings">
+        <structure>
+            <property name="name">queryText</property>
+            <property name="id">130</property>
+        </structure>
+    </list-property>
+    <property name="iconFile">/templates/blank_report.gif</property>
+    <property name="bidiLayoutOrientation">ltr</property>
+    <property name="imageDPI">96</property>
+    <data-sources>
+        <oda-data-source extensionID="org.eclipse.birt.report.data.oda.stack" name="Источник данных" id="23">
+            <property name="FILELIST">data.xml</property>
+            <property name="MAINTAG">Отчет</property>
+        </oda-data-source>
+    </data-sources>
+    <data-sets>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.stack.dataSet" name="Набор данных" id="26">
+            <property name="nullsOrdering">nulls lowest</property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">НомерДог</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">ДатаДог</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">СтекТип</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">колЛС</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">колАРМ</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">колБД</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">ДолжФ</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">НаимФ</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">ФИОФ</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">ДолжОрг</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">НаимОрг</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">ФИООрг</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">Сумма</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">Флаг</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Источник данных</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">НомерДог</property>
+                    <property name="nativeName">НомерДог</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">ДатаДог</property>
+                    <property name="nativeName">ДатаДог</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">СтекТип</property>
+                    <property name="nativeName">СтекТип</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">колЛС</property>
+                    <property name="nativeName">колЛС</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">колАРМ</property>
+                    <property name="nativeName">колАРМ</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">колБД</property>
+                    <property name="nativeName">колБД</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">ДолжФ</property>
+                    <property name="nativeName">ДолжФ</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">НаимФ</property>
+                    <property name="nativeName">НаимФ</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">ФИОФ</property>
+                    <property name="nativeName">ФИОФ</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
+                    <property name="name">ДолжОрг</property>
+                    <property name="nativeName">ДолжОрг</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">НаимОрг</property>
+                    <property name="nativeName">НаимОрг</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">ФИООрг</property>
+                    <property name="nativeName">ФИООрг</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">Сумма</property>
+                    <property name="nativeName">Сумма</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">14</property>
+                    <property name="name">Флаг</property>
+                    <property name="nativeName">Флаг</property>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[Select НомерДог,ДатаДог,СтекТип,колЛС,колАРМ,колБД,ДолжФ,НаимФ,ФИОФ,ДолжОрг,
+	     НаимОрг,ФИООрг,Сумма,Флаг from {;Отчет}]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.stack.dataSet" name="Таблица" id="130">
+            <property name="nullsOrdering">nulls lowest</property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">НомЗад</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">РасшЗадачи</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Источник данных</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">НомЗад</property>
+                    <property name="nativeName">НомЗад</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">РасшЗадачи</property>
+                    <property name="nativeName">РасшЗадачи</property>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select НомЗад,РасшЗадачи from {;Таблица}]]></xml-property>
+        </oda-data-set>
+    </data-sets>
+    <styles>
+        <style name="report" id="4">
+            <property name="fontFamily">sans-serif</property>
+            <property name="fontSize">10pt</property>
+        </style>
+        <style name="crosstab-cell" id="5">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+        <style name="crosstab" id="6">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+    </styles>
+    <page-setup>
+        <simple-master-page name="Simple MasterPage" id="2">
+            <property name="type">a4</property>
+            <property name="topMargin">2cm</property>
+            <property name="leftMargin">3cm</property>
+            <property name="bottomMargin">2cm</property>
+            <property name="rightMargin">1.5cm</property>
+            <property name="headerHeight">0in</property>
+            <property name="footerHeight">0in</property>
+        </simple-master-page>
+    </page-setup>
+    <body>
+        <grid id="30">
+            <property name="fontFamily">"Century Gothic"</property>
+            <property name="textAlign">justify</property>
+            <property name="height">18.018125cm</property>
+            <property name="dataSet">Набор данных</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">НомерДог</property>
+                    <text-property name="displayName">НомерДог</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["НомерДог"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">ДатаДог</property>
+                    <text-property name="displayName">ДатаДог</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ДатаДог"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">СтекТип</property>
+                    <text-property name="displayName">СтекТип</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["СтекТип"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">колЛС</property>
+                    <text-property name="displayName">колЛС</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["колЛС"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">колАРМ</property>
+                    <text-property name="displayName">колАРМ</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["колАРМ"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">колБД</property>
+                    <text-property name="displayName">колБД</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["колБД"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">ДолжФ</property>
+                    <text-property name="displayName">ДолжФ</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ДолжФ"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">НаимФ</property>
+                    <text-property name="displayName">НаимФ</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["НаимФ"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">ФИОФ</property>
+                    <text-property name="displayName">ФИОФ</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ФИОФ"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">ДолжОрг</property>
+                    <text-property name="displayName">ДолжОрг</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ДолжОрг"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">НаимОрг</property>
+                    <text-property name="displayName">НаимОрг</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["НаимОрг"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">ФИООрг</property>
+                    <text-property name="displayName">ФИООрг</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ФИООрг"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">Сумма</property>
+                    <text-property name="displayName">Сумма</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["Сумма"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">Флаг</property>
+                    <text-property name="displayName">Флаг</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["Флаг"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <column id="31"/>
+            <row id="32">
+                <property name="textAlign">center</property>
+                <cell id="33">
+                    <property name="paddingTop">1pt</property>
+                    <text id="147">
+                        <property name="fontFamily">"Tahoma"</property>
+                        <property name="textAlign">right</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[Приложение №1<br>
+к договору № <VALUE-OF>row["НомерДог"]</VALUE-OF><br>
+от <VALUE-OF>row["ДатаДог"]</VALUE-OF><BR>
+]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="34">
+                <property name="height">5mm</property>
+                <cell id="35">
+                    <property name="textAlign">center</property>
+                </cell>
+            </row>
+            <row id="36">
+                <cell id="37">
+                    <text id="148">
+                        <property name="fontFamily">"Tahoma"</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="textAlign">center</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[Спецификация<BR>
+арендуемых продуктов и лицензий<BR>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="38">
+                <property name="height">5mm</property>
+                <cell id="39"/>
+            </row>
+            <row id="40">
+                <cell id="41">
+                    <table id="149">
+                        <property name="width">16.35125cm</property>
+                        <property name="dataSet">Таблица</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">НомЗад</property>
+                                <text-property name="displayName">НомЗад</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["НомЗад"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">РасшЗадачи</property>
+                                <text-property name="displayName">РасшЗадачи</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["РасшЗадачи"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <column id="180">
+                            <property name="width">0.873125cm</property>
+                        </column>
+                        <column id="181">
+                            <property name="width">9.2075cm</property>
+                        </column>
+                        <column id="182">
+                            <property name="width">2.1166666666666667cm</property>
+                        </column>
+                        <column id="183">
+                            <property name="width">1.4022916666666667cm</property>
+                        </column>
+                        <column id="184">
+                            <property name="width">2.7252083333333337cm</property>
+                        </column>
+                        <header>
+                            <row id="150">
+                                <property name="borderBottomColor">#000000</property>
+                                <property name="borderBottomStyle">solid</property>
+                                <property name="borderBottomWidth">1px</property>
+                                <property name="borderLeftColor">#000000</property>
+                                <property name="borderLeftStyle">solid</property>
+                                <property name="borderLeftWidth">1px</property>
+                                <property name="borderRightColor">#000000</property>
+                                <property name="borderRightStyle">solid</property>
+                                <property name="borderRightWidth">1px</property>
+                                <property name="borderTopColor">#000000</property>
+                                <property name="borderTopStyle">solid</property>
+                                <property name="borderTopWidth">1px</property>
+                                <cell id="151">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">1px</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">1px</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">1px</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">1px</property>
+                                    <label id="185">
+                                        <property name="fontFamily">"Tahoma"</property>
+                                        <property name="textAlign">center</property>
+                                        <text-property name="text">№ п/п</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="152">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">1px</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">1px</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">1px</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">1px</property>
+                                    <label id="186">
+                                        <property name="fontFamily">"Tahoma"</property>
+                                        <property name="textAlign">center</property>
+                                        <text-property name="text">Программное обеспечение</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="153">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">1px</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">1px</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">1px</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">1px</property>
+                                    <label id="187">
+                                        <property name="fontFamily">"Tahoma"</property>
+                                        <property name="textAlign">center</property>
+                                        <text-property name="text">Цена,</text-property>
+                                    </label>
+                                    <label id="338">
+                                        <property name="fontFamily">"Tahoma"</property>
+                                        <property name="textAlign">center</property>
+                                        <text-property name="text">руб./мес.</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="154">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">1px</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">1px</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">1px</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">1px</property>
+                                    <label id="189">
+                                        <property name="fontFamily">"Tahoma"</property>
+                                        <text-property name="text">Кол-во</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="155">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">1px</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">1px</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">1px</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">1px</property>
+                                    <label id="190">
+                                        <property name="fontFamily">"Tahoma"</property>
+                                        <property name="textAlign">center</property>
+                                        <text-property name="text">Сумма,</text-property>
+                                    </label>
+                                    <label id="339">
+                                        <property name="fontFamily">"Tahoma"</property>
+                                        <property name="textAlign">center</property>
+                                        <text-property name="text">руб./мес.</text-property>
+                                    </label>
+                                </cell>
+                            </row>
+                            <row id="291">
+                                <property name="borderBottomColor">#000000</property>
+                                <property name="borderBottomStyle">solid</property>
+                                <property name="borderBottomWidth">1px</property>
+                                <property name="borderLeftColor">#000000</property>
+                                <property name="borderLeftStyle">solid</property>
+                                <property name="borderLeftWidth">1px</property>
+                                <property name="borderRightColor">#000000</property>
+                                <property name="borderRightStyle">solid</property>
+                                <property name="borderRightWidth">1px</property>
+                                <property name="borderTopColor">#000000</property>
+                                <property name="borderTopStyle">solid</property>
+                                <property name="borderTopWidth">1px</property>
+                                <cell id="292">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">1px</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">1px</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">1px</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">1px</property>
+                                    <label id="191">
+                                        <property name="fontFamily">"Tahoma"</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="textAlign">center</property>
+                                        <text-property name="text">1</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="293">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">1px</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">1px</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">1px</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">1px</property>
+                                    <label id="192">
+                                        <property name="fontFamily">"Tahoma"</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="textAlign">center</property>
+                                        <text-property name="text">2</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="294">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">1px</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">1px</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">1px</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">1px</property>
+                                    <label id="193">
+                                        <property name="fontFamily">"Tahoma"</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="textAlign">center</property>
+                                        <text-property name="text">3</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="295">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">1px</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">1px</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">1px</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">1px</property>
+                                    <label id="194">
+                                        <property name="fontFamily">"Tahoma"</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="textAlign">center</property>
+                                        <text-property name="text">4</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="296">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">1px</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">1px</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">1px</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">1px</property>
+                                    <label id="195">
+                                        <property name="fontFamily">"Tahoma"</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="textAlign">center</property>
+                                        <text-property name="text">5</text-property>
+                                    </label>
+                                </cell>
+                            </row>
+                            <row id="297">
+                                <property name="borderBottomColor">#000000</property>
+                                <property name="borderBottomStyle">solid</property>
+                                <property name="borderBottomWidth">1px</property>
+                                <property name="borderLeftColor">#000000</property>
+                                <property name="borderLeftStyle">solid</property>
+                                <property name="borderLeftWidth">1px</property>
+                                <property name="borderRightColor">#000000</property>
+                                <property name="borderRightStyle">solid</property>
+                                <property name="borderRightWidth">1px</property>
+                                <property name="borderTopColor">#000000</property>
+                                <property name="borderTopStyle">solid</property>
+                                <property name="borderTopWidth">1px</property>
+                                <cell id="298">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">1px</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">1px</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">1px</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">1px</property>
+                                    <property name="verticalAlign">middle</property>
+                                    <label id="227">
+                                        <property name="fontFamily">"Tahoma"</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="textAlign">center</property>
+                                        <text-property name="text">1</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="299">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">1px</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">1px</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">1px</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">1px</property>
+                                    <text id="196">
+                                        <property name="fontFamily">"Tahoma"</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="dataSet">Набор данных</property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">НомерДог</property>
+                                                <text-property name="displayName">НомерДог</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["НомерДог"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">ДатаДог</property>
+                                                <text-property name="displayName">ДатаДог</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["ДатаДог"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">СтекТип</property>
+                                                <text-property name="displayName">СтекТип</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["СтекТип"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">колЛС</property>
+                                                <text-property name="displayName">колЛС</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["колЛС"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">колАРМ</property>
+                                                <text-property name="displayName">колАРМ</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["колАРМ"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">колБД</property>
+                                                <text-property name="displayName">колБД</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["колБД"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">ДолжФ</property>
+                                                <text-property name="displayName">ДолжФ</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["ДолжФ"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">НаимФ</property>
+                                                <text-property name="displayName">НаимФ</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["НаимФ"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">ФИОФ</property>
+                                                <text-property name="displayName">ФИОФ</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["ФИОФ"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">ДолжОрг</property>
+                                                <text-property name="displayName">ДолжОрг</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["ДолжОрг"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">НаимОрг</property>
+                                                <text-property name="displayName">НаимОрг</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["НаимОрг"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">ФИООрг</property>
+                                                <text-property name="displayName">ФИООрг</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["ФИООрг"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">Сумма</property>
+                                                <text-property name="displayName">Сумма</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["Сумма"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">Флаг</property>
+                                                <text-property name="displayName">Флаг</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["Флаг"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[Комплекс программ <VALUE-OF>row["СтекТип"]</VALUE-OF>
+(<VALUE-OF>row["колЛС"]</VALUE-OF> лицевых счетов), на <VALUE-OF>row["колАРМ"]</VALUE-OF> АРМ в пределах <VALUE-OF>row["колБД"]</VALUE-OF> базы данных организации в составе программ: 
+]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="300">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">1px</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">1px</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">1px</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">1px</property>
+                                </cell>
+                                <cell id="301">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">1px</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">1px</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">1px</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">1px</property>
+                                </cell>
+                                <cell id="302">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">1px</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">1px</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">1px</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">1px</property>
+                                    <property name="verticalAlign">middle</property>
+                                    <data id="228">
+                                        <property name="fontFamily">"Tahoma"</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="dataSet">Набор данных</property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">НомерДог</property>
+                                                <text-property name="displayName">НомерДог</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["НомерДог"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">ДатаДог</property>
+                                                <text-property name="displayName">ДатаДог</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["ДатаДог"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">СтекТип</property>
+                                                <text-property name="displayName">СтекТип</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["СтекТип"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">колЛС</property>
+                                                <text-property name="displayName">колЛС</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["колЛС"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">колАРМ</property>
+                                                <text-property name="displayName">колАРМ</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["колАРМ"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">колБД</property>
+                                                <text-property name="displayName">колБД</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["колБД"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">ДолжФ</property>
+                                                <text-property name="displayName">ДолжФ</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["ДолжФ"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">НаимФ</property>
+                                                <text-property name="displayName">НаимФ</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["НаимФ"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">ФИОФ</property>
+                                                <text-property name="displayName">ФИОФ</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["ФИОФ"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">ДолжОрг</property>
+                                                <text-property name="displayName">ДолжОрг</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["ДолжОрг"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">НаимОрг</property>
+                                                <text-property name="displayName">НаимОрг</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["НаимОрг"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">ФИООрг</property>
+                                                <text-property name="displayName">ФИООрг</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["ФИООрг"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">Сумма</property>
+                                                <text-property name="displayName">Сумма</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["Сумма"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">Флаг</property>
+                                                <text-property name="displayName">Флаг</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["Флаг"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="resultSetColumn">Сумма</property>
+                                    </data>
+                                </cell>
+                            </row>
+                        </header>
+                        <detail>
+                            <row id="168">
+                                <cell id="169">
+                                    <property name="colSpan">1</property>
+                                    <property name="rowSpan">1</property>
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">1px</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">1px</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">1px</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">1px</property>
+                                </cell>
+                                <cell id="333">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">1px</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">1px</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">1px</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">1px</property>
+                                    <data id="146">
+                                        <property name="fontFamily">"Tahoma"</property>
+                                        <property name="fontSize">10pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="marginTop">0pt</property>
+                                        <property name="marginLeft">0pt</property>
+                                        <property name="paddingTop">0pt</property>
+                                        <property name="paddingLeft">0pt</property>
+                                        <property name="paddingBottom">0pt</property>
+                                        <property name="paddingRight">0pt</property>
+                                        <property name="textAlign">left</property>
+                                        <property name="display">inline</property>
+                                        <property name="resultSetColumn">РасшЗадачи</property>
+                                    </data>
+                                </cell>
+                                <cell id="334">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">1px</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">1px</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">1px</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">1px</property>
+                                </cell>
+                                <cell id="335">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">1px</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">1px</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">1px</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">1px</property>
+                                    <label id="337">
+                                        <property name="fontFamily">"Tahoma"</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="textAlign">center</property>
+                                        <text-property name="text">1</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="336">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">1px</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">1px</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">1px</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">1px</property>
+                                </cell>
+                            </row>
+                        </detail>
+                        <footer>
+                            <row id="303">
+                                <property name="borderBottomColor">#000000</property>
+                                <property name="borderBottomStyle">solid</property>
+                                <property name="borderBottomWidth">1px</property>
+                                <property name="borderLeftColor">#000000</property>
+                                <property name="borderLeftStyle">solid</property>
+                                <property name="borderLeftWidth">1px</property>
+                                <property name="borderRightColor">#000000</property>
+                                <property name="borderRightStyle">solid</property>
+                                <property name="borderRightWidth">1px</property>
+                                <property name="borderTopColor">#000000</property>
+                                <property name="borderTopStyle">solid</property>
+                                <property name="borderTopWidth">1px</property>
+                                <cell id="304">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">1px</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">1px</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">1px</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">1px</property>
+                                    <label id="235">
+                                        <property name="fontFamily">"Tahoma"</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="textAlign">center</property>
+                                        <text-property name="text">2</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="305">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">1px</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">1px</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">1px</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">1px</property>
+                                    <label id="236">
+                                        <property name="fontFamily">"Tahoma"</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="textAlign">left</property>
+                                        <text-property name="text">Документация в электронном виде</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="306">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">1px</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">1px</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">1px</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">1px</property>
+                                </cell>
+                                <cell id="307">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">1px</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">1px</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">1px</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">1px</property>
+                                </cell>
+                                <cell id="308">
+                                    <property name="borderBottomColor">#000000</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">1px</property>
+                                    <property name="borderLeftColor">#000000</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">1px</property>
+                                    <property name="borderRightColor">#000000</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">1px</property>
+                                    <property name="borderTopColor">#000000</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">1px</property>
+                                </cell>
+                            </row>
+                        </footer>
+                    </table>
+                </cell>
+            </row>
+            <row id="42">
+                <property name="height">1cm</property>
+                <cell id="43"/>
+            </row>
+            <row id="197">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">row["Флаг"]!=0</expression>
+                    </structure>
+                </list-property>
+                <cell id="198">
+                    <grid id="199">
+                        <property name="width">16.271875cm</property>
+                        <column id="200">
+                            <property name="width">7.845cm</property>
+                        </column>
+                        <column id="201">
+                            <property name="width">0.5cm</property>
+                        </column>
+                        <column id="202">
+                            <property name="width">7.845cm</property>
+                        </column>
+                        <row id="203">
+                            <cell id="204">
+                                <label id="219">
+                                    <property name="fontFamily">"Tahoma"</property>
+                                    <property name="fontWeight">bold</property>
+                                    <text-property name="text">ОТ Лицензиара:</text-property>
+                                </label>
+                            </cell>
+                            <cell id="205"/>
+                            <cell id="206">
+                                <label id="223">
+                                    <property name="fontFamily">"Tahoma"</property>
+                                    <property name="fontWeight">bold</property>
+                                    <text-property name="text">ОТ Лицензиата:</text-property>
+                                </label>
+                            </cell>
+                        </row>
+                        <row id="207">
+                            <cell id="208">
+                                <text id="220">
+                                    <property name="fontFamily">"Tahoma"</property>
+                                    <property name="textAlign">left</property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["ДолжФ"]</VALUE-OF><BR>
+<VALUE-OF>row["НаимФ"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="209"/>
+                            <cell id="210">
+                                <text id="224">
+                                    <property name="fontFamily">"Tahoma"</property>
+                                    <property name="textAlign">left</property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["ДолжОрг"]</VALUE-OF><BR>
+<VALUE-OF>row["НаимОрг"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                        <row id="211">
+                            <cell id="212">
+                                <text id="221">
+                                    <property name="fontFamily">"Tahoma"</property>
+                                    <property name="marginTop">1cm</property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[______________________ / <VALUE-OF>row["ФИОФ"]</VALUE-OF> /]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="213"/>
+                            <cell id="214">
+                                <text id="225">
+                                    <property name="fontFamily">"Tahoma"</property>
+                                    <property name="marginTop">1cm</property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[______________________ / <VALUE-OF>row["ФИООрг"]</VALUE-OF> /]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                        <row id="215">
+                            <cell id="216">
+                                <text id="222">
+                                    <property name="fontFamily">"Tahoma"</property>
+                                    <property name="fontSize">5pt</property>
+                                    <property name="marginLeft">1.5cm</property>
+                                    <property name="paddingLeft">1pt</property>
+                                    <property name="textAlign">center</property>
+                                    <property name="display">inline</property>
+                                    <property name="contentType">auto</property>
+                                    <text-property name="content"><![CDATA[(подпись)
+ М.П.]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="217"/>
+                            <cell id="218">
+                                <text id="226">
+                                    <property name="fontFamily">"Tahoma"</property>
+                                    <property name="fontSize">5pt</property>
+                                    <property name="marginLeft">1.5cm</property>
+                                    <property name="paddingLeft">1pt</property>
+                                    <property name="textAlign">center</property>
+                                    <property name="display">inline</property>
+                                    <property name="contentType">auto</property>
+                                    <text-property name="content"><![CDATA[(подпись)
+ М.П.]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                    </grid>
+                </cell>
+            </row>
+            <row id="239">
+                <property name="height">7.1172916666666675cm</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">row["Флаг"]==0</expression>
+                    </structure>
+                </list-property>
+                <cell id="240">
+                    <property name="backgroundAttachment">fixed</property>
+                    <property name="backgroundPositionX">0%</property>
+                    <property name="backgroundPositionY">15mm</property>
+                    <property name="backgroundRepeat">no-repeat</property>
+                    <property name="backgroundSizeHeight">2in</property>
+                    <property name="backgroundSizeWidth">2in</property>
+                    <grid id="241">
+                        <property name="width">16.324791666666666cm</property>
+                        <column id="273">
+                            <property name="width">1cm</property>
+                        </column>
+                        <column id="242"/>
+                        <column id="243">
+                            <property name="width">0.5cm</property>
+                        </column>
+                        <column id="244"/>
+                        <column id="278">
+                            <property name="width">5mm</property>
+                        </column>
+                        <row id="245">
+                            <cell id="269"/>
+                            <cell id="246">
+                                <label id="247">
+                                    <property name="fontFamily">"Tahoma"</property>
+                                    <property name="fontWeight">bold</property>
+                                    <property name="display">inline</property>
+                                    <text-property name="text">ОТ Лицензиара:</text-property>
+                                </label>
+                            </cell>
+                            <cell id="248"/>
+                            <cell id="249">
+                                <label id="250">
+                                    <property name="fontFamily">"Tahoma"</property>
+                                    <property name="fontWeight">bold</property>
+                                    <property name="display">inline</property>
+                                    <text-property name="text">ОТ Лицензиата:</text-property>
+                                </label>
+                            </cell>
+                            <cell id="274"/>
+                        </row>
+                        <row id="251">
+                            <cell id="270"/>
+                            <cell id="252">
+                                <text id="253">
+                                    <property name="fontFamily">"Tahoma"</property>
+                                    <property name="textAlign">left</property>
+                                    <property name="display">block</property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["ДолжФ"]</VALUE-OF><BR>
+<VALUE-OF>row["НаимФ"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="254"/>
+                            <cell id="255">
+                                <text id="256">
+                                    <property name="fontFamily">"Tahoma"</property>
+                                    <property name="textAlign">left</property>
+                                    <property name="display">block</property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["ДолжОрг"]</VALUE-OF><BR>
+<VALUE-OF>row["НаимОрг"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="275"/>
+                        </row>
+                        <row id="257">
+                            <property name="height">2in</property>
+                            <cell id="271">
+                                <property name="colSpan">2</property>
+                                <property name="rowSpan">1</property>
+                                <property name="backgroundImage">Report_Birt\ПечатьСтек.jpg</property>
+                                <property name="backgroundRepeat">no-repeat</property>
+                                <text id="259">
+                                    <property name="fontFamily">"Tahoma"</property>
+                                    <property name="marginTop">1cm</property>
+                                    <property name="marginLeft">1cm</property>
+                                    <property name="display">block</property>
+                                    <structure name="toc"/>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[_______________________/<VALUE-OF>row["ФИОФ"]</VALUE-OF>/]]></text-property>
+                                </text>
+                                <text id="265">
+                                    <property name="fontFamily">"Tahoma"</property>
+                                    <property name="fontSize">5pt</property>
+                                    <property name="marginTop">0mm</property>
+                                    <property name="marginLeft">2cm</property>
+                                    <property name="paddingTop">1pt</property>
+                                    <property name="paddingLeft">1pt</property>
+                                    <property name="textAlign">center</property>
+                                    <property name="display">inline</property>
+                                    <property name="contentType">auto</property>
+                                    <text-property name="content"><![CDATA[
+(подпись)
+ М.П.]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="260"/>
+                            <cell id="261">
+                                <text id="262">
+                                    <property name="fontFamily">"Tahoma"</property>
+                                    <property name="marginTop">1cm</property>
+                                    <property name="display">block</property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[_____________________/<VALUE-OF>row["ФИООрг"]</VALUE-OF>/]]></text-property>
+                                </text>
+                                <text id="268">
+                                    <property name="fontFamily">"Tahoma"</property>
+                                    <property name="fontSize">5pt</property>
+                                    <property name="marginTop">0mm</property>
+                                    <property name="marginLeft">1.5cm</property>
+                                    <property name="paddingTop">1pt</property>
+                                    <property name="paddingLeft">1pt</property>
+                                    <property name="textAlign">center</property>
+                                    <property name="display">inline</property>
+                                    <property name="contentType">auto</property>
+                                    <text-property name="content"><![CDATA[
+(подпись)
+ М.П.]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="276"/>
+                        </row>
+                    </grid>
+                </cell>
+            </row>
+        </grid>
+    </body>
+</report>
