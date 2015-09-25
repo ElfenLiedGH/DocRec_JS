@@ -76,12 +76,19 @@ class кДОконтрольВерсии{
     // Конвертация полей таблиц ДО из image в varchar( max )
     static ОбновлениеТаблицДляВерсии1(){
         кДОконтрольВерсии.ОбновлениеТаблицДляВерсии1_КонвертацияСтолбцаТаблицы( "ДО задания", "Отметки" );
+        СобратьМусор();
         кДОконтрольВерсии.ОбновлениеТаблицДляВерсии1_КонвертацияСтолбцаТаблицы( "ДО задания шаблон", "Отметки" );
+        СобратьМусор();
         кДОконтрольВерсии.ОбновлениеТаблицДляВерсии1_КонвертацияСтолбцаТаблицы( "ДО заметки", "Заметка" );
+        СобратьМусор();
         кДОконтрольВерсии.ОбновлениеТаблицДляВерсии1_КонвертацияСтолбцаТаблицы( "ДО переходы", "Исходный текст" );
+        СобратьМусор();
         кДОконтрольВерсии.ОбновлениеТаблицДляВерсии1_КонвертацияСтолбцаТаблицы( "ДО часы", "Примечание" );
-        кДОконтрольВерсии.ОбновлениеЭлектроннойПочты();
-        кДОконтрольВерсии.ОбновлениеДокументооборота_ДеровоДокументов();
+        СобратьМусор();
+        //кДОконтрольВерсии.ОбновлениеЭлектроннойПочты();
+        //СобратьМусор();
+        //кДОконтрольВерсии.ОбновлениеДокументооборота_ДеровоДокументов();
+        //СобратьМусор();
     }
     static ОбновлениеТаблицДляВерсии1_КонвертацияСтолбцаТаблицы( ИмяТаблицы, ИмяСтолбца ){
         var СозданиеСтолбца = `   ALTER TABLE ~` + ИмяТаблицы + `~ ADD [` + ИмяСтолбца + `1] VARCHAR(max) NULL `;
@@ -102,7 +109,7 @@ class кДОконтрольВерсии{
         var УдалитьСтолбец = Command( ` ALTER TABLE ~` + ИмяТаблицы + `~ DROP COLUMN [` + ИмяСтолбца+ `]`, 1, "" );
         УдалитьСтолбец.Выполнить();
         УдалитьСтолбец.Завершить();
-        var ТекстЗапроса =  ` sp_rename 'stack.[` + ИмяТаблицы + `].[` + ИмяСтолбца + `1]', '` + [ИмяСтолбца] + `', 'COLUMN'; `;
+        var ТекстЗапроса =  ` sp_rename 'stack.[` + ИмяТаблицы + `].[` + ИмяСтолбца + `1]', '` + ИмяСтолбца + `', 'COLUMN'; `;
         var ПереименоватьСтолбец = Command( ТекстЗапроса, 1, "" );
         ПереименоватьСтолбец.Выполнить();
         ПереименоватьСтолбец.Завершить();
@@ -170,6 +177,13 @@ class кWinHttp{
         this.WinHttpRequest = ВнешнийОбъект( this.ИмяБиблиотеки );
         if( !this.WinHttpRequest  ){
             throw new StackError( 'Не удалось создать объект ' + this.ИмяБиблиотеки );
+        }
+    }
+    УстановитьСвойства( Свойства ){
+        for( let Свойство in Свойства ) {
+            //if( !Свойства.hasOwnProperty( Свойство ) )
+            //http.SetRequestHeader("Connection", "keep-alive");
+            //http.SetRequestHeader("Cookie", "name=asterisk");
         }
     }
     /**
@@ -353,14 +367,24 @@ class кЭтапПроекта extends кПроект{
         super(НомерЗаписи);
     }
 }
+/**
+ * @class кЗаявка
+ * @extends БазовыйОбъект
+ */
 class кЗаявка extends БазовыйОбъект {
-    constructor( параметр ){
-        super( 'ДО карточки', -1 );
+    /**
+     *
+     * @param НомерЗаписи
+     * @param Контекст
+     */
+    constructor( НомерЗаписи, Контекст ){
+        super( 'ДО карточки',  НомерЗаписи, Контекст );
         /**
          * договор карточки (по хорошому должен быть нормальный класс)
          * @type {кДоговор}
+         * @private
          */
-        this.Договор = undefined;
+        this._Договор;
         /**
          * текущая фаза заявки
          * @type {{id: number, Название: string, Исполнитель: string}}
@@ -370,20 +394,54 @@ class кЗаявка extends БазовыйОбъект {
             'Исполнитель' : '',
             'Работа' : -1,
             'ТипИсполнителя' : 0};
-        if( параметр ) this.Прочитать( параметр );
+
+        /**
+         * Работы по заявке
+         */
+        this._Работы;
+
+        if( this.НомерЗаписи && !this.ПолученоИзКонтекста ){
+            super.Прочитать();
+        }
     }
-    Прочитать( параметр ){
-        var установлено = false;
-        if( typeof параметр == 'number' && super.Прочитать(параметр)){
-            установлено = true;
-        } else if( typeof параметр == 'object' ){
-            this.Установить( НомерЗаписи(параметр) );
-            if( super.ПрочитатьИзКонтекста( параметр ) ) установлено = true;
-        }
-        if( установлено ) {
-            this.Договор = new кДоговор( this.Объект['Карточка-Договор'], true );
-        }
-        return установлено;
+
+
+    /**
+     *
+     * @param {array} работы
+     */
+    set Работы( работы ){
+        this._Работы = работы;
+    }
+    /**
+     *
+     * @returns {array}
+     */
+    get Работы(){
+        if( !this._Работы ) this._Работы = this.ПолучитьРаботы();
+        return this._Работы;
+    }
+
+
+    /**
+     *
+     * @param Договор
+     */
+    set Договор( Договор ){
+        this.УстановитьСвойство( "Договор", 'Карточка-Договор', 'кДоговор', Договор );
+    }
+
+    /**
+     *
+     * @returns {*}
+     */
+    get Договор() {
+        return this.ПолучитьСвойство( "Договор", 'Карточка-Договор', 'кДоговор' );
+    }
+
+    Очистить(){
+        this._Договор = undefined;
+        super.Очистить();
     }
     ЕстьНепустыеЗадания() {
         var запросРабот = Query(`;WITH sum1 AS (
@@ -401,7 +459,7 @@ class кЗаявка extends БазовыйОбъект {
                                SELECT SUM([cnt]) cnt
                                FROM sum1`, 1, "id,S,id2,S");
         запросРабот.УстановитьПараметры( this.НомерЗаписи, this.НомерЗаписи );
-        запросРабот.Следующий()
+        запросРабот.Следующий();
         return запросРабот.cnt > 0;
     }
 
@@ -430,8 +488,15 @@ class кЗаявка extends БазовыйОбъект {
         зРабот.УстановитьПараметры( this.НомерЗаписи );
         return зРабот.Следующий() ? зРабот.cnt : 0;
     }
+    /**
+     * Возвращает объъект с отработанными часами по заявке
+     * Поля:
+     * 'Дата'
+     * 'Отработано'
+     * 'КОплате'
+     * @returns {*}
+     */
     ПолучитьЧасы(){
-        //'оЗадание.@Дата ввода' = ТекДат();
         var зДанных = Query( 'SELECT MAX(h.[Дата ввода]) [Дата], ' +
             'SUM(60*datepart(hour, h.[Время работы]) + datepart(minute, h.[Время работы]))/60 [Часы], ' +
             'SUM(60*datepart(hour, h.[Время работы]) + datepart(minute, h.[Время работы]))%60 [Минуты], ' +
@@ -442,470 +507,130 @@ class кЗаявка extends БазовыйОбъект {
             'WHERE task.[Задание-Карточка] = :1', 1, "task,S" );
         зДанных.УстановитьПараметры( this.НомерЗаписи );
         if( зДанных.Следующий() ){
-            // @Дата ввода
-            // задание @ВремениПоЗаданию, @КОплатеПоЗаданию
-            // карта @ВВремениПоЗаданию, @ВКОплатеПоЗаданию
-            return {'Дата' : !зДанных.Дата.isEmpty() ? зДанных.Дата : new Date(),
-                'Отработано' : зДанных.Часы + ":" + зДанных.Минуты.ЧислоСВедущимиНулями(2),
-                'КОплате' : зДанных.ОплЧасы + ":" + зДанных.ОплМинуты.ЧислоСВедущимиНулями(2)};
+            return {
+                'Дата': !зДанных.Дата.isEmpty() ? зДанных.Дата : new Date(),
+                'Отработано': зДанных.Часы + ":" + зДанных.Минуты.ЧислоСВедущимиНулями(2),
+                'КОплате': зДанных.ОплЧасы + ":" + зДанных.ОплМинуты.ЧислоСВедущимиНулями(2)
+            };
         }
-        return null;
+        return {
+            'Дата': new Date(),
+            'Отработано': "00:00",
+            'КОплате': "00:00"
+        };
     }
-    ПолучитьИсториюHtml( нзРаботы, дляКарточки ){
-        var стрСтили = '<html><body><style>' +
-            'body{' +
-            '  padding:0;' +
-            '  margin:0;' +
-            '  font-size: 8pt;' +
-            '  padding-top:10px;' +
-            '}' +
-            '.btn-mini [class^="icon-"],' +
-            '.btn-mini [class*=" icon-"] {' +
-            '  margin-top: -1px;' +
-            '  font-size: 8pt;' +
-            '}' +
-            '[class^="icon-"],' +
-            '[class*=" icon-"] {' +
-            '  display: inline-block;' +
-            '  width: 14px;' +
-            '  height: 14px;' +
-            '  margin-top: 1px;' +
-            '  line-height: 14px;' +
-            '  vertical-align: text-top;' +
-            '  background-image: url("resources/glyphicons-halflings.png");' +
-            '  background-position: 14px 14px;' +
-            '  background-repeat: no-repeat;' +
-            '}' +
-            '.icon-off {' +
-            '  background-position: -384px 0;' +
-            '}' +
-            '.icon-info-sign {' +
-            '  background-position: -120px -96px;' +
-            '}' +
-            '.icon-pencil {' +
-            '  background-position: 0 -72px;' +
-            '}' +
-            '.btn:hover,' +
-            '.btn:focus {' +
-            '  color: #333333;' +
-            '  text-decoration: none;' +
-            '  background-position: 0 -15px;' +
-            '  -webkit-transition: background-position 0.1s linear;' +
-            '  -moz-transition: background-position 0.1s linear;' +
-            '  -o-transition: background-position 0.1s linear;' +
-            '  transition: background-position 0.1s linear;' +
-            '}' +
-            '.btn:hover,' +
-            '.btn:focus,' +
-            '.btn:active,' +
-                '.btn.active,' +
-                '.btn.disabled,' +
-            '.btn[disabled] {' +
-            '  color: #333333;' +
-            '  background-color: #e6e6e6;' +
-            '}' +
-            '.btn-mini {' +
-            '  padding: 0 6px;' +
-            '  font-size: 8pt;' +
-            '  -webkit-border-radius: 3px;' +
-            '  -moz-border-radius: 3px;' +
-            '  border-radius: 3px;' +
-            '}' +
-            '.btn {' +
-            '  display: inline-block;' +
-            '  padding: 4px 12px;' +
-            '  margin-bottom: 0;' +
-            '  font-size: 8pt;' +
-            '  line-height: 20px;' +
-            '  color: #333333;' +
-            '  text-align: center;' +
-            '  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);' +
-            '  vertical-align: middle;' +
-            '  cursor: pointer;' +
-            '  background-color: #f5f5f5;' +
-            '  background-color: #f5f5f5;' +
-            '  background-image: -moz-linear-gradient(top, #ffffff, #e6e6e6);' +
-            '  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#e6e6e6));' +
-            '  background-image: -webkit-linear-gradient(top, #ffffff, #e6e6e6);' +
-            '  background-image: -o-linear-gradient(top, #ffffff, #e6e6e6);' +
-            '  background-image: linear-gradient(to bottom, #ffffff, #e6e6e6);' +
-            '  background-repeat: repeat-x;' +
-            '  border: 1px solid #cccccc;' +
-            '  border-color: #e6e6e6 #e6e6e6 #bfbfbf;' +
-            '  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);' +
-            '  border-bottom-color: #b3b3b3;' +
-            '  -webkit-border-radius: 4px;' +
-            '  -moz-border-radius: 4px;' +
-            '  border-radius: 4px;' +
-            "  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffe6e6e6', GradientType=0);" +
-            '  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);' +
-            '  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);' +
-            '  -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);' +
-            '  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);' +
-            '}' +
-            'button{' +
-            '  font-size: 8pt;' +
-            '  font-weight: normal;' +
-            '  line-height: 20px;' +
-            '  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;' +
-            '}' +
-            'button,' +
-            'html input[type="button"],' +
-            'input[type="reset"],' +
-            'input[type="submit"] {' +
-            '  cursor: pointer;' +
-            '}' +
-            'input[type="checkbox"] {' +
-            '  float: left;' +
-            '  margin-left: -20px;' +
-            '  width: auto;' +
-            '  margin: 4px 0 0;' +
-            '  line-height: normal;' +
-            '  cursor: pointer;' +
-            '}' +
-            'input[type="button"],' +
-            'input[type="submit"],' +
-            'input[type="reset"],' +
-            'input[type="file"]::-webkit-file-upload-button,' +
-            'button {' +
-            '  text-align: center;' +
-            '  cursor: default;' +
-            '  color: buttontext;' +
-            '  padding: 2px 6px 3px;' +
-            '  border: 2px outset buttonface;' +
-            '}' +
-            'button{' +
-            '  line-height: normal;' +
-            '  font-size: 100%;' +
-            '  margin: 0em;' +
-            '  font: -webkit-small-control;' +
-            '  color: initial;' +
-            '  letter-spacing: normal;' +
-            '  word-spacing: normal;' +
-            '  text-transform: none;' +
-            '  text-indent: 0px;' +
-            '  text-shadow: none;' +
-            '  text-align: start;' +
-            '}' +
-            'table {' +
-            '  max-width: 100%;' +
-            '  background-color: transparent;' +
-            '  border-collapse: collapse;' +
-            '  border-spacing: 0;' +
-            '  font-size:8pt;' +
-            '  font-family:Arial;' +
-            '}' +
-            '.table {' +
-            '  width: 100%;' +
-            '  margin: 0px;' +
-            '  margin-bottom:20px;' +
-            '}' +
-            '.table th,' +
-            '.table td {' +
-            '  padding: 2px;' +
-            '  line-height: 16px;' +
-            '  text-align: left;' +
-            '  vertical-align: top;' +
-            '  border-top: 1px solid #dddddd;' +
-            '}' +
-            '.table th {' +
-            '  font-weight: bold;' +
-            '}' +
-            '.table thead th {' +
-            '  vertical-align: bottom;' +
-            '}' +
-            '.table caption + thead tr:first-child th,' +
-            '.table caption + thead tr:first-child td,' +
-            '.table colgroup + thead tr:first-child th,' +
-            '.table colgroup + thead tr:first-child td,' +
-            '.table thead:first-child tr:first-child th,' +
-            '.table thead:first-child tr:first-child td {' +
-            '  border-top: 0;' +
-            '}' +
-            '.table tbody + tbody {' +
-            '  border-top: 2px solid #dddddd;' +
-            '}' +
-            '.table .table {' +
-            '  background-color: #ffffff;' +
-            '}' +
-            '.table-condensed th,' +
-            '.table-condensed td {' +
-            '  padding: 2px 2px;' +
-            '}' +
-            '.table-bordered {' +
-            '  border: 1px solid black;' +
-            '  border-collapse: separate;' +
-            '  *border-collapse: collapse;' +
-            '  border-left: 0;' +
-            '  -webkit-border-radius: 4px;' +
-            '  -moz-border-radius: 4px;' +
-            '  border-radius: 4px;' +
-            '}' +
-            '.table-bordered th,' +
-            '.table-bordered td {' +
-            '  border-left: 1px solid #dddddd;' +
-            '}' +
-            '.table-bordered caption + thead tr:first-child th,' +
-            '.table-bordered caption + tbody tr:first-child th,' +
-            '.table-bordered caption + tbody tr:first-child td,' +
-            '.table-bordered colgroup + thead tr:first-child th,' +
-            '.table-bordered colgroup + tbody tr:first-child th,' +
-            '.table-bordered colgroup + tbody tr:first-child td,' +
-            '.table-bordered thead:first-child tr:first-child th,' +
-            '.table-bordered tbody:first-child tr:first-child th,' +
-            '.table-bordered tbody:first-child tr:first-child td {' +
-            '  border-top: 0;' +
-            '}' +
-            '.table-bordered thead:first-child tr:first-child > th:first-child,' +
-            '.table-bordered tbody:first-child tr:first-child > td:first-child,' +
-            '.table-bordered tbody:first-child tr:first-child > th:first-child {' +
-            '  -webkit-border-top-left-radius: 4px;' +
-            '  border-top-left-radius: 4px;' +
-            '  -moz-border-radius-topleft: 4px;' +
-            '}' +
-            '.table-bordered thead:first-child tr:first-child > th:last-child,' +
-            '.table-bordered tbody:first-child tr:first-child > td:last-child,' +
-            '.table-bordered tbody:first-child tr:first-child > th:last-child {' +
-            '  -webkit-border-top-right-radius: 4px;' +
-            '  border-top-right-radius: 4px;' +
-            '  -moz-border-radius-topright: 4px;' +
-            '}' +
-            '.table-bordered thead:last-child tr:last-child > th:first-child,' +
-            '.table-bordered tbody:last-child tr:last-child > td:first-child,' +
-            '.table-bordered tbody:last-child tr:last-child > th:first-child,' +
-            '.table-bordered tfoot:last-child tr:last-child > td:first-child,' +
-            '.table-bordered tfoot:last-child tr:last-child > th:first-child {' +
-            '  -webkit-border-bottom-left-radius: 4px;' +
-            '  border-bottom-left-radius: 4px;' +
-            '  -moz-border-radius-bottomleft: 4px;' +
-            '}' +
-            '.table-bordered thead:last-child tr:last-child > th:last-child,' +
-            '.table-bordered tbody:last-child tr:last-child > td:last-child,' +
-            '.table-bordered tbody:last-child tr:last-child > th:last-child,' +
-            '.table-bordered tfoot:last-child tr:last-child > td:last-child,' +
-            '.table-bordered tfoot:last-child tr:last-child > th:last-child {' +
-            '  -webkit-border-bottom-right-radius: 4px;' +
-            '  border-bottom-right-radius: 4px;' +
-            '  -moz-border-radius-bottomright: 4px;' +
-            '}' +
-            '.table-bordered tfoot + tbody:last-child tr:last-child td:first-child {' +
-            '  -webkit-border-bottom-left-radius: 0;' +
-            '  border-bottom-left-radius: 0;' +
-            '  -moz-border-radius-bottomleft: 0;' +
-            '}' +
-            '.table-bordered tfoot + tbody:last-child tr:last-child td:last-child {' +
-            '  -webkit-border-bottom-right-radius: 0;' +
-            '  border-bottom-right-radius: 0;' +
-            '  -moz-border-radius-bottomright: 0;' +
-            '}' +
-            '.table-bordered caption + thead tr:first-child th:first-child,' +
-            '.table-bordered caption + tbody tr:first-child td:first-child,' +
-            '.table-bordered colgroup + thead tr:first-child th:first-child,' +
-            '.table-bordered colgroup + tbody tr:first-child td:first-child {' +
-            '  -webkit-border-top-left-radius: 4px;' +
-            '  border-top-left-radius: 4px;' +
-            '  -moz-border-radius-topleft: 4px;' +
-            '}' +
-            '.table-bordered caption + thead tr:first-child th:last-child,' +
-            '.table-bordered caption + tbody tr:first-child td:last-child,' +
-            '.table-bordered colgroup + thead tr:first-child th:last-child,' +
-            '.table-bordered colgroup + tbody tr:first-child td:last-child {' +
-            '  -webkit-border-top-right-radius: 4px;' +
-            '  border-top-right-radius: 4px;' +
-            '  -moz-border-radius-topright: 4px;' +
-            '}' +
-            '.table-bordered caption + thead tr:first-child th:last-child,' +
-            '.table-bordered caption + tbody tr:first-child td:last-child,' +
-            '.table-bordered colgroup + thead tr:first-child th:last-child,' +
-            '.table-bordered colgroup + tbody tr:first-child td:last-child {' +
-            '  -webkit-border-top-right-radius: 4px;' +
-            '  border-top-right-radius: 4px;' +
-            '  -moz-border-radius-topright: 4px;' +
-            '}' +
-            '.table-striped tbody > tr:nth-child(odd)  td,' +
-            '.table-striped tbody > tr:nth-child(odd)  th {' +
-            '  background-color: #f9f9f9;' +
-            '}' +
-            '.table-hover tbody tr:hover  td,' +
-            '.table-hover tbody tr:hover  th {' +
-            '  background-color: #f5f5f5;' +
-            '}' +
-            '.table tbody tr.success  td {' +
-            '  background-color: #dff0d8;' +
-            '}' +
-            '.table tbody tr.error  td {' +
-            '  background-color: #f2dede;' +
-            '}' +
-            '.table tbody tr.warning  td {' +
-            '   background-color: #fcf8e3;' +
-            '}' +
-            '.table tbody tr.info  td {' +
-            '  background-color: #d9edf7;' +
-            '}' +
-            '.table-hover tbody tr.success:hover  td {' +
-            '  background-color: #d0e9c6;' +
-            '}' +
-            '.table-hover tbody tr.error:hover  td {' +
-            '   background-color: #ebcccc;' +
-            '}' +
-            '.table-hover tbody tr.warning:hover  td {' +
-            '  background-color: #faf2cc;' +
-            '}' +
-            '.table-hover tbody tr.info:hover td {' +
-            '  background-color: #c4e3f3;' +
-            '}' +
-            'background-color: #c4e3f3;' +
-            '}</style>';
-        var зДополнений = BufferedReader( 'SELECT job.[Отметки], job.ТипИсполнителя, job.ROW_ID, job.Примечание, ' +
-            '   case when job.[Задание-Представитель]<0 then edit.ФИО ' +
-            '        else man.ФИО end AS Редактор, ISNULL(sel.[Файлов],1) [Файлов] ' +
-            'FROM ~ДО задания~ job ' +
-            '     LEFT JOIN ( ' +
-            '       SELECT [Файл-Задание], COUNT(ROW_ID) [Файлов] ' +
-            '       FROM ~ДО внешние документы~ ' +
-            '       WHERE [Файл-Задание]<>-1 ' +
-            '       GROUP BY [Файл-Задание]) sel ON sel.[Файл-Задание]=job.ROW_ID ' +
-            '     LEFT JOIN ~Сотрудники~ edit ON job.[Задание-Редактор]=edit.row_id ' +
-            '     LEFT JOIN ~Частные лица~ man ON job.[Задание-Представитель]=man.row_id ' +
-            'WHERE job.[Задание-Карточка]=:1 AND job.ТипИсполнителя IN(5,6,7,8) ' +
-            'ORDER BY job.[Дата выдачи] desc, job.[Время выдачи] desc', 500, "card,S" );
-        зДополнений.УстановитьПараметры( this.НомерЗаписи );
-        var стрДополнений = '',
-            путь_ист = "file:///" + КаталогКлиента().replace( /"\\"/g, "/" ) + "resources/";
-        if( зДополнений.Количество() ){
-            var зВнДок = Query( 'SELECT [Короткое имя], ROW_ID, Признаки FROM ~ДО внешние документы~ ' +
-                'WHERE [Файл-Задание]=:1', 100, "job,S" );
-            стрДополнений = '<table class="table table-condensed table-bordered">\n' +
-                '<thead style="background: #f7f7f9;">\n' +
-                '  <th style="width: 56%; padding: 2px; text-align: center">Дополнения к заявке</th>\n' +
-                '  <th style="width: 10%; padding: 2px; text-align: center">Редактор</th>\n' +
-                '  <th style="width: 22%; padding: 2px; text-align: center">Файл</th>\n' +
-                '  <th style="width: 5%; padding: 2px; text-align: center">Выбор</th>\n' +
-                '  <th style="width: 7%; padding: 2px; text-align: center">Действия</th>\n' +
-                '</thead><tbody>';
-            while( зДополнений.Следующий() ) {
-                switch( зДополнений.ТипИсполнителя ) {
-                    case 5:
-                        var сч = 0;
-                        зВнДок.УстановитьПараметры( зДополнений.ROW_ID );
-                        while( сч < зДополнений.Файлов ) {
-                            стрДополнений += '<tr class="info">\n';
-                            if( сч == 0 ) {
-                                стрДополнений += '<td rowspan=' + зДополнений.Файлов + '>' + зДополнений.Отметки.replaceAll( "\n", "<br>" ) + '</td>\n';
-                                стрДополнений += '<td rowspan=' + зДополнений.Файлов + '>' + ФИО( зДополнений.Редактор ) + '</td>\n';
-                            }
-                            if( зВнДок.Следующий() ) {
-                                if( дляКарточки || (зВнДок.Признаки & 1) == 0 ) {// для карточки документа и нормального файла (не временного) не показываем чекбоксы
-                                    стрДополнений += '<td colspan=2>' + зВнДок['Короткое имя'] + '</td>';
-                                } else {
-                                    стрДополнений += '<td>' + зВнДок['Короткое имя'] +
-                                        '</td><td><input type="checkbox" name="' + зВнДок['Короткое имя'] + '" style="margin: 0 35%;" onchange="javascript:javascriptOnclick(\'ВыбратьФайлДополнения()\',' + зВнДок.ROW_ID + ', this.checked,' + зДополнений.ROW_ID + ',"' + зВнДок['Короткое имя'] + '");"></td>';
-                                }
-                            } else {
-                                стрДополнений += '<td></td><td></td>';
-                                if( сч++ == 0 ) {
-                                    if( дляКарточки ) {
-                                        стрДополнений += '<td rowspan=' + зДополнений.Файлов + ' style="vertical-align: middle; text-align: center; width:100px !important;">' +
-                                            ' <button class="btn btn-mini" style="padding:2px 2px; width:80px" onclick="javascript:javascriptOnclick(\'УдалитьДополнение\',' + зДополнений.ROW_ID + ');" title="Удалить"><img src="' + путь_ист + "remove.png" + '" style="border:0; padding:0; margin:0; width:14px; height:14px; display: inline-block; line-height: 14px; vertical-align: text-top;">Удалить</button>' +
-                                            '</td></tr>\n';
-                                    } else {
-                                        стрДополнений += '<td rowspan=' + зДополнений.Файлов + ' style="vertical-align: middle; text-align: center; width:100px !important;">' +
-                                            ' <button class="btn btn-mini" style="padding:2px 2px; width:130px" onclick="javascript:javascriptOnclick(\'ДействиеНадДополнением()\',' + зДополнений.ROW_ID + ');" title="Выбрать действие"><img src="' + путь_ист + "action.png" + '" style="border:0; padding:0; margin:0; width:14px; height:14px; display: inline-block; line-height: 14px; vertical-align: text-top;">Выбрать действие</button>' +
-                                            '</td>';
-                                    }
-                                }
-                                стрДополнений += "</tr>\n";
-                            }
-                        }
-                        break;
-                    case 6, 7, 8:
-                        стрДополнений += '<tr>\n' +
-                            '<td >' + зДополнений.Отметки.replaceAll( "\n", "<br>" ) + '</td>\n' +
-                            '<td >' + ФИО( зДополнений.Редактор ) + '</td>\n' +
-                            '<td colspan=3 style="vertical-align: middle">' + зДополнений.Примечание + '</td></tr>\n';
-                        break;
+
+    /**
+     * Возвращает массив объъектов с данными по работам заявки
+     * Работа : БазовыйОбъект( "ДО задания" ), ( ТипИсполнителя IN(5,6,7,8) - это дополнения )
+     * Файлы : [] БазовыйОбъект( "ДО внешние документы" )
+     * Исполнители : {
+     *     Исполнитель : {
+     *      ФИО,
+     *      ROW_ID,
+     *      Телефон
+     *     }
+     *     Редактор : {
+     *      ФИО,
+     *      ROW_ID,
+     *      Телефон
+     *     }
+     *     ЧастноеЛицо : {
+     *      ФИО,
+     *      ROW_ID,
+     *      Телефон
+     *     }
+     * }
+     * @returns {Array}
+     */
+    ПолучитьРаботы(){
+        if( !this.НомерЗаписи || this.НомерЗаписи <= 0 ) return [];
+        var дополнения = [];
+        var файлы = [];
+        var файл;
+        var работа;
+        var исполнители;
+        var зДополнения = Query(
+            ` SELECT job.*,
+                    files.[ROW_ID] as file_ROW_ID
+                   ,files.[Файл-Категория] as file_
+                   ,files.[Примечание] as file_Примечание
+                   ,files.[Имя файла] as [file_Имя файла]
+                   ,files.[Короткое имя] as [file_Короткое имя]
+                   ,files.[Редактор] as file_Редактор
+                   ,files.[Добавлен] as file_Добавлен
+                   ,files.[Скачано] as file_Скачано
+                   ,files.[Время изменения] as [file_Время изменения]
+                   ,files.[Дата изменения] as [file_Дата изменения]
+                   ,files.[ИзмененияАвтор] as file_ИзмененияАвтор
+                   ,files.[Новый файл] as [file_Новый файл]
+                   ,files.[Признаки] as file_Признаки
+                    ,edit.ФИО as edit_ФИО
+                    ,edit.ROW_ID as edit_ROW_ID
+                    ,edit.Телефон as edit_Телефон
+                    ,peform.ФИО as peform_ФИО
+                    ,peform.ROW_ID as peform_ROW_ID
+                    ,peform.Телефон as peform_Телефон
+                    ,man.ФИО as man_ФИО
+                    ,man.ROW_ID as man_ROW_ID
+                    ,man.Телефон as man_Телефон
+
+                FROM ~ДО задания~ job
+           LEFT JOIN ~ДО внешние документы~ files ON files.[Файл-Задание]=job.ROW_ID
+           LEFT JOIN ~Сотрудники~ edit ON job.[Задание-Редактор]=edit.row_id
+           LEFT JOIN ~Сотрудники~ peform ON job.[Задание-Исполнитель]=peform.row_id
+           LEFT JOIN ~Частные лица~ man ON job.[Задание-Представитель]=man.row_id
+               WHERE job.[Задание-Карточка]=:1
+            ORDER BY job.[Дата выдачи] desc, job.[Время выдачи] desc `, 500, "card,S" );
+        var предыдущаяРабота;
+        зДополнения.УстановитьПараметры( this.НомерЗаписи );
+        while( зДополнения.Следующий() ){
+            if( предыдущаяРабота && предыдущаяРабота != зДополнения.ROW_ID ){
+                работа.Файлы = файлы;
+                дополнения.push( {Работа : работа, Исполнители : исполнители } );
+                работа = null;
+                исполнители = null;
+                файлы = [];
+            }
+            предыдущаяРабота = зДополнения.ROW_ID;
+            if( !работа ) работа = new кРабота( зДополнения.ROW_ID, зДополнения, this );
+            if( !исполнители ){
+                исполнители = {
+                    Исполнитель : {
+                        ФИО : зДополнения.peform_ФИО,
+                        ROW_ID : зДополнения.peform_ROW_ID,
+                        Телефон : зДополнения.peform_Телефон
+                    },
+                    Редактор : {
+                        ФИО : зДополнения.edit_ФИО,
+                        ROW_ID : зДополнения.edit_ROW_ID,
+                        Телефон : зДополнения.edit_Телефон
+                    },
+                    ЧастноеЛицо : {
+                        ФИО : зДополнения.man_ФИО,
+                        ROW_ID : зДополнения.man_ROW_ID,
+                        Телефон : зДополнения.man_Телефон
                     }
-                }
-        }
-        стрДополнений += "</tbody></table>";
-        var зИстЗаявки = Query( 'SELECT task.ROW_ID, m.[ФИО], m.Телефон, chl.ФИО ЧФИО, edit.ФИО as [Редактор], task.[Статус завершения], task.Подзадания, ' +
-            '   task.[Дата выдачи], convert(varchar(5), task.[Время выдачи], 14) [Время выдачи], ' +
-            '   task.[Дата завершения], convert(varchar(5), task.[Время завершения], 14) [Время завершения], ' +
-            '   task.[Отметки],kf.Название as Фаза, task.ТипИсполнителя, task.ROW_ID, hours.[Часов], hours.[КОплате] ' +
-            'FROM ~ДО задания~ task ' +
-            '    JOIN ~ДО Карточки~ d ON d.ROW_ID=task.[Задание-Карточка] ' +
-            '    LEFT JOIN ~ДО фазы~ k ON k.ROW_ID = task.[Задание-Фаза] ' +
-            '    LEFT JOIN ~ДО категории фаз~ kf ON kf.ROW_ID = k.[Фаза-Категория] ' +
-            '    LEFT JOIN ~Сотрудники~ m ON m.ROW_ID=task.[Задание-Исполнитель] ' +
-            '    LEFT JOIN ~Сотрудники~ edit ON edit.ROW_ID=task.[Задание-Редактор] ' +
-            '    LEFT JOIN ~Частные лица~ chl ON task.[Задание-Представитель] = chl.ROW_ID ' +
-            '    LEFT JOIN ( SELECT work.[row_id], ' +
-            '                   sum(60*datepart(hour, hour.[Время работы]) + datepart(minute, hour.[Время работы])) [Часов], ' +
-            '                   sum(60*datepart(hour, hour.[Время к оплате]) + datepart(minute, hour.[Время к оплате])) [КОплате] ' +
-            '                FROM ~ДО часы~ hour ' +
-            '                     JOIN ~ДО задания~ work ON hour.[Часы-Задание]=work.[row_id] ' +
-            '                WHERE work.[Задание-Карточка]=:1 ' +
-            '                GROUP BY work.[row_id]) hours on hours.ROW_ID=task.row_id ' +
-            'WHERE d.ROW_ID = :2 AND task.ТипИсполнителя IN(0,1) ' +
-            'ORDER BY task.[Дата выдачи] desc, task.[Время выдачи] desc', 100, "card1,S,card2,S" );
-        зИстЗаявки.УстановитьПараметры( this.НомерЗаписи, this.НомерЗаписи );
-        var стрИсторияРабот = '<table class="table table-condensed table-bordered ">\n' +
-            '<thead style="background: #f7f7f9;">\n' +
-            ' <th style="width: 20%; padding: 2px; text-align: center">Исполнитель</th>\n' +
-            ' <th style="width: 20%; padding: 2px; text-align: center">Редактор</th>\n' +
-            ' <th style="width: 20%; padding: 2px; text-align: center">Фаза</th>\n' +
-            ' <th style="width: 8%; padding: 2px; text-align: center">Получено</th>\n' +
-            ' <th style="width: 12%; white-space: nowrap; padding: 2px; text-align: center">Завершено</th>\n' +
-            ' <th style="width: 8%; padding: 2px; text-align: center">Часов</th>\n'+
-            ' <th style="width: 8%; padding: 2px; text-align: center">К Оплате</th>\n'+
-        ' <th style="width: 4%; padding: 2px; text-align: center" title="Действия"></th>\n'+
-        '</thead><tbody>\n';
-        var стильСтр = "", черныйКоммент = true;
-        var кол = 0, текстПодзадания = "";
-        while( зИстЗаявки.Следующий() ){
-            if( зИстЗаявки.ROW_ID == нзРаботы && зИстЗаявки.Подзадания != -1 )
-                текстПодзадания = зИстЗаявки.Отметки;
-            var атс = зИстЗаявки.Телефон.split( "#" )[0];
-
-            if( зИстЗаявки['Статус завершения'] == 0 ) {// задание в процессе отображаем синим
-                стильСтр = зИстЗаявки.ТипИсполнителя == 0 ? ' style="color: #0000ff;' : ' style="color: #21abff;';
-            } else {
-                стильСтр = '  style="color: #000000;';
+                };
             }
-            стрИсторияРабот += '<tr' + стильСтр + ' border: 1px solid black; border-top: none;" >\n' +
-                '<td style="border-left: 1px solid black; border-top: 1px solid black;">' + (зИстЗаявки.ТипИсполнителя == 0 ? ФИО( зИстЗаявки.ФИО ) + " (" + атс + ")" : ФИО( зИстЗаявки.ЧФИО )) + '</td>\n' +
-                '<td style="border-top: 1px solid black;">' + ФИО( зИстЗаявки.Редактор ) + '</td>\n' +
-                '<td style="border-top: 1px solid black;">' + (зИстЗаявки.Подзадания == -1 ? зИстЗаявки.Фаза : "Подзадание") + '</td>\n' +
-                '<td style="border-top: 1px solid black;">' + зИстЗаявки['Дата выдачи'].format( 'rusDate' ) + '</td>\n' +
-                '<td style="border-top: 1px solid black;">' + (!зИстЗаявки['Дата завершения'].isEmpty() ? зИстЗаявки['Дата завершения'].format( 'rusDate' ) + "  (" + (зИстЗаявки['Дата завершения'].countOfDayBetweenDates( зИстЗаявки['Дата выдачи'] ) + 1) + " дн.)" : "") + '</td>\n' +
-                '<td style="border-top: 1px solid black;">' + (зИстЗаявки.Часов ? Math.floor(зИстЗаявки.Часов/60).ЧислоСВедущимиНулями(3) + ":" + (зИстЗаявки.Часов%60).ЧислоСВедущимиНулями(2) : "") + '</td>\n' +
-                '<td style="border-top: 1px solid black;">' + (зИстЗаявки.КОплате ? Math.floor(зИстЗаявки.Часов/60).ЧислоСВедущимиНулями(3) + ":" + (зИстЗаявки.Часов%60).ЧислоСВедущимиНулями(2) : "") + '</td>\n' + '<td style="text-align: center; border-right: 1px solid black; border-top: 1px solid black;">\n';
-
-            if( зИстЗаявки['Статус завершения'] == 0 && дляКарточки )
-                стрИсторияРабот += '<button class="btn btn-mini" style=" padding:4px 2px" onclick="javascript:javascriptOnclick(\'ЗавершитьЗадание\',' + зИстЗаявки.ROW_ID + ');" title="Завершить"><img src="' + путь_ист + "close.png" + '" style="border:0; padding:0; margin:0; width:14px; height:14px; display: inline-block; line-height: 14px; vertical-align: text-top;"></button>\n';
-            if( (зИстЗаявки['Статус завершения'] == 0 && дляКарточки )
-                || (кол==0 && зИстЗаявки['Статус завершения'] == 1 && дляКарточки) )
-            стрИсторияРабот += '<button class="btn btn-mini" style=" padding:4px 2px" onclick="javascript:javascriptOnclick(\'ОтменитьЗадание\',' + зИстЗаявки.ROW_ID + ');" title="Отменить работу"><img src="' + путь_ист + "undo.png" + '" style="border:0; padding:0; margin:0; width:14px; height:14px; display: inline-block; line-height: 14px; vertical-align: text-top;"></button>\n';
-            стрИсторияРабот += "</td></tr>";
-            if( зИстЗаявки.Отметки ){
-                стильСтр = ' style="color: #000000"';
-                стрИсторияРабот += '<tr><td colspan="8" style="border: 1px solid black; border-top: none;"><p><span' + стильСтр + ">" + зИстЗаявки.Отметки.replaceAll( "\n", "<br>" ) + '</span></p></tr>\n';
+            if( зДополнения.file_ROW_ID ) {
+                файл = new БазовыйОбъект("ДО внешние документы");
+                файл.ПрочитатьИзКонтекста(зДополнения, "file_");
+                файл.НомерЗаписи = зДополнения.file_ROW_ID;
+                файлы.push(файл);
             }
-            кол++;
         }
-        var стрПодзадание = "";
-        if( текстПодзадания ){
-            стрПодзадание = '<table class="table table-condensed table-bordered">\n' +
-                '<thead style="background: #f7f7f9;">\n' +
-                '  <th style="font-size: 10pt;width: 63%; padding: 2px; text-align: left">Ваше подзадание по заявке:</th>\n' +
-                '</thead><tbody>';
-            стрПодзадание += '<td>' + текстПодзадания + '</td>';
+        if( работа ){
+            работа.Файлы = файлы;
+            дополнения.push( {Работа : работа, Исполнители : исполнители } );
         }
-
-        стрИсторияРабот += '</tbody></table></body></html>';
-        // this.Запись['@HTMLTable']
-        return стрСтили + стрПодзадание + стрДополнений + стрИсторияРабот;
+        return дополнения;
     }
+
+    /**
+     * Возвращает новый доступный номер заявки в соответсвии с договором
+     * @returns {*}
+     */
     НовыйНомер(){
         if( this.Договор.НомерЗаписи < 0 ) return 0;
         var зНомера = Query( 'SELECT ISNULL(max(card.[Номер]), 0) [Номер] ' +
@@ -917,87 +642,80 @@ class кЗаявка extends БазовыйОбъект {
     }
 
     /**
+     * Проверяет соблюдение условий для запуска в работу, если условие не выполнено создает исключение StackError
+     */
+    ПроверитьВозможностьЗапускаВРаботу(){
+        var ОшибкаЗавершения = "Запустить в работу невозможно, т.к. ";
+        if( !this.Объект ) throw new StackError( ОшибкаЗавершения + "заявка не инициализирована." );
+        if( this.Объект['Карточка-Договор'] <= 0 ) throw new StackError( ОшибкаЗавершения + "необходимо заполнить договор." );
+        if( !this.Объект['ПланЧасов'] ) throw new StackError( ОшибкаЗавершения + "необходимо заполнить план часов на заявку." );
+        if( this.Объект['Карточка-Организация'] <= 0 ) throw new StackError( ОшибкаЗавершения + "не указана организация." );
+        if( this.Объект['Карточки-Маршрут'] <= 0 ) throw new StackError( ОшибкаЗавершения + "не указан маршрут." );
+    }
+
+    /**
+     * Запуск заявки в работу
+     * @returns {boolean}
+     */
+    ЗапуститьВРаботу(){
+        this.ПроверитьВозможностьЗапускаВРаботу();
+        var работа = new кРабота();
+        работа.Внести();
+        работа.Заявка = this;
+        работа.Объект["Задание-Исполнитель"] = НомерЗаписи( Пользователь() );
+        работа.Объект["Задание-Редактор"] = НомерЗаписи( Пользователь() );
+        работа.Объект["Завершить до"] = this.ЗавершитьДо();
+        // ищем фазу с минимальным номером на маршруте
+        var зСтартоваяФаза = Query( 'SELECT TOP 1 ROW_ID FROM ~ДО Фазы~ ' +
+            'WHERE [Маршрут-фазы]=:1 ' +
+            'ORDER BY Номер', 1, "m1,S" );
+        зСтартоваяФаза.УстановитьПараметры( this.Объект['Карточки-Маршрут'] );
+        зСтартоваяФаза.Следующий();
+        работа.Фаза = new кФаза( зСтартоваяФаза.ROW_ID, null, работа );
+        работа.Объект["Дата выдачи"] = new Date();
+        работа.Объект["Время выдачи"] = new Date();
+        работа.Сохранить();
+        var длгЗавершение = СоздатьДиалог("ДО - Завершение работы");
+        длгЗавершение.Обработчик.Работа = работа;
+        if(!длгЗавершение.Выполнить()){
+            работа.Удалить();
+            return false;
+        }
+        try {
+            работа.Завершить( длгЗавершение.Обработчик.ПараметрыЗавершения );
+        }
+        catch(err){
+            работа.Удалить();
+            throw err;
+        }
+        return true;
+    }
+
+    /**
      * устанавливает справочные данные текущего задания заявки
      * @returns {boolean} если такое задание существует
      */
     УстановитьТекущуюФазу(){
         if( this.ТекущаяФаза.id == -1 ){
-            var текСтадия = BufferedReader( 'SELECT k.ROW_ID, kf.Название, isp.ФИО, task.ROW_ID idJob, task.ТипИсполнителя ' +
+            var текСтадия = BufferedReader( 'SELECT k.ROW_ID, kf.Название, isp.ФИО, chl.ФИО ЧФИО, task.ROW_ID idJob, task.ТипИсполнителя ' +
                 'FROM ~ДО задания~ task ' +
-                '     JOIN ~Сотрудники~ isp ON task.[Задание-Исполнитель] = isp.Row_ID ' +
                 '     JOIN ~ДО фазы~ k ON k.ROW_ID = task.[Задание-Фаза] ' +
                 '     JOIN ~ДО категории фаз~ kf ON kf.ROW_ID = k.[Фаза-Категория] ' +
+                '     LEFT JOIN ~Сотрудники~ isp ON task.[Задание-Исполнитель] = isp.ROW_ID ' +
+                '     LEFT JOIN ~Частные лица~ chl ON task.[Задание-Представитель] = chl.ROW_ID ' +
                 'WHERE task.[Задание-Карточка]=:1 AND task.Подзадания<0 AND task.ТипИсполнителя IN(0,1)' +
                 'ORDER BY task.[Дата выдачи] desc, task.[Время выдачи] desc, task.ROW_ID desc', 1, "id,S" );
             текСтадия.УстановитьПараметры( this.НомерЗаписи );
             if( текСтадия.Следующий() ) {
                 this.ТекущаяФаза.id = текСтадия.ROW_ID;
                 this.ТекущаяФаза.Название = текСтадия.Название;
-                this.ТекущаяФаза.Исполнитель = текСтадия.ФИО;
-                this.ТекущаяФаза.Работа = текСтадия.idJob;
                 this.ТекущаяФаза.ТипИсполнителя = текСтадия.ТипИсполнителя;
+                this.ТекущаяФаза.Исполнитель = this.ТекущаяФаза.ТипИсполнителя == 0 ? текСтадия.ФИО : текСтадия.ЧФИО;
+                this.ТекущаяФаза.Работа = текСтадия.idJob;
+
             }
         }
         return this.ТекущаяФаза.id != -1;
-    }
-    ПолучитьЧасыДоговор(){
-        var зИнфПоДоговору = Query( 'DECLARE @d int = :1, @dat datetime = :2, @par int = :3; ' +
-            ';WITH S AS( ' +
-            '   select h.[Время к оплате], w.[Статус завершения] [СтатусРаботы], c.[ПланЧасов], d.[Тема], h.Перенос ' +
-            '   FROM ~ДО задания~ w ' +
-            '        JOIN ~ДО карточки~ c ON c.[row_id]=w.[Задание-Карточка] ' +
-            '        JOIN ~Договор~ d ON d.[row_id]=c.[Карточка-Договор] ' +
-            '        LEFT JOIN ~ДО Часы~ h ON w.[row_id]=h.[Часы-Задание] ' +
-            '   WHERE d.[ROW_ID]=@d ' +
-            "      AND h.[Дата ввода] BETWEEN CASE WHEN d.[Тема] IN ('СКА','СЭА') THEN @dat " +
-            "                        WHEN d.[Тема] IN ('СКП','СЭД','СКД') THEN d.[Начало договора] " +
-            "                        ELSE '20450509' END " +
-            "      AND CASE WHEN d.[Тема] IN ('СКА','СЭА','СКП','СЭД','СКД') THEN getdate() " +
-            "          ELSE '20450509' END " +
-            ") " +
-            "SELECT (SELECT TOP 1 Значение FROM ~Свойства~ sv WHERE sv.[Виды-Параметры]=@par AND sv.[Параметры-Договор]=@d ORDER BY ДатКнц desc) AS Всегочасов, " +
-            "   ROUND( CONVERT(float, SUM(r.ОтрабВремя))/60, 2) [ОтрабВремя], r.[СтатусРаботы], r.[ПланЧасов], r.Тема " +
-            "FROM ( " +
-            "   SELECT 60*DATEPART(hour, [Время к оплате]) + DATEPART(minute, [Время к оплате]) [ОтрабВремя], " +
-            "       [СтатусРаботы], [ПланЧасов], Тема" +
-            "   FROM S WHERE Перенос & 1=0 " +
-            "   UNION ALL" +
-            "   SELECT -1*( 60*DATEPART(hour, [Время к оплате]) + DATEPART(minute, [Время к оплате]) ) ОтрабВремя," +
-            "       [СтатусРаботы], [ПланЧасов], Тема " +
-            "   FROM S WHERE Перенос & 1>0 ) AS r " +
-            "GROUP BY r.[СтатусРаботы], r.[Тема], r.[ПланЧасов]", 1, "Dog,S,Dat,D,par,S" );
-        var колРабот = 0;
-        зИнфПоДоговору.УстановитьПараметры( this.Договор.НомерЗаписи, new Date().СледующийМесяц(0), ДанныеПараметра("АБОН_ЧАСЫ") );
-        //@ИнфПланЧасов @ИнфВсегоЧасов @ИнфФактЧасов @ИнфПланЧасов @ИнфВозмПланФ @ИнфВозмПланПФ
-        // @МеткаИнфВсегоЧасов
-        var информация = {};
-        while( зИнфПоДоговору.Следующий() ) {
-            информация.ВсегоЧасов = Number( зИнфПоДоговору.ВсегоЧасов );
-            информация.ФактЧасов  += зИнфПоДоговору.ОтрабВремя;
-            информация.ПланЧасов  += зИнфПоДоговору.ОтрабВремя;
-            информация.ВозмПланФ  = информация.ВсегоЧасов - информация.ФактЧасов;
-            информация.ВозмПланПФ = информация.ВсегоЧасов - информация.ПланЧасов;
-            if( зИнфПоДоговору.Тема == "СКА" || зИнфПоДоговору.Тема == "СЭА" || зИнфПоДоговору.Тема == "СУА" ) {
-                информация.МВсегоЧасов = "часов по договору в месяц";
-            } else if( зИнфПоДоговору.Тема == "СКД" || зИнфПоДоговору.Тема == "СКК" )
-                информация.МВсегоЧасов = "в год";
-            колРабот++;
-        }
-        информация.ПланЧасов += this.Объект.ПланЧасов;
-
-        if( колРабот == 0 ){
-            var зАбонЧасов = Query( 'SELECT TOP 1 sv.Значение ' +
-                'FROM ~Договор~ d ' +
-                '     JOIN ~Свойства~ sv ON sv.[Параметры-Договор] = d.ROW_ID ' +
-                'WHERE d.ROW_ID=:1 ' +
-                "   AND sv.[Виды-Параметры] = CASE WHEN d.[Тема] IN ('СКА','СЭА','СКП') " +
-                "                             THEN (SELECT TOP 1 ROW_ID FROM ~Виды параметров~ WHERE [Название]='АБОН_ЧАСЫ') " +
-                "                             ELSE -2 END " +
-                "ORDER BY sv.ДатКнц DESC", 1, "Dog,S" );
-            зАбонЧасов.УстановитьПараметры( this.Договор.НомерЗаписи );
-            информация.ВсегоЧасов = зАбонЧасов.Следующий() ? Number( зАбонЧасов.Значение ) : 0;
-        }
-        return информация;
     }
 
     /**
@@ -1020,17 +738,19 @@ class кЗаявка extends БазовыйОбъект {
         }
         var сообщение = new кЭлСообщение( нзСообщение );
         var вложенияСообщения = сообщение.ПолучитьВложение( -10 );
+        // добавляем сам текст письма в html
+        if( сообщение.ПолучитьТекст('html', -10)) {
+            var вложениеhtml = new кЭлВложение(нзСообщение, 'сообщение');
+            // его предварительно нужно упаковать
+            вложениеhtml.Установить(-1, "Письмо.html", 4, УпаковатьДанные(сообщение.СменитьКодировкуHtml("cp866")), '');
+            вложенияСообщения.push(вложениеhtml);
+        }
         var результат = [];
         for( let вложение of вложенияСообщения ){
             // в заявку копируем только файлы и html
-            if( вложение.Тип != 0 && вложение.Тип != 4 ) continue;
-                // вложение письма - html
-            if( вложение.Тип == 4 ) {
-                вложение.ИмяФайла = "Письмо.html";
-                вложение.ОбразФайла = вложение.СменитьКодировкуHtml( "cp866" );
-                    // todo может для оптимизации перенести в параметр добавления документа, использовать УпаковатьДвоичноеПоле
-                вложение.ОбразФайла = УпаковатьДанные( вложение.ОбразФайла );
-            }
+            //if( вложение.Тип != 0 && вложение.Тип != 4 ) continue;
+            // todo удалить при переходе
+            if( вложение.Тип != 0 && вложение.Тип != 1 ) continue;
             let внДок = this.ДобавитьВнешнийДокумент( вложение.ОбразФайла, вложение.ИмяФайла, категорияФ,
                 сообщение.Объект['Организация-Сообщения'] );
             if( внДок > 0 ) результат.push( {'Документ' : внДок,
@@ -1053,13 +773,13 @@ class кЗаявка extends БазовыйОбъект {
         var датаИзменения = new Date();
 
         оВнешнийДокумент.ПрочитатьИзКонтекста( {'Файл-Карточка' : this.НомерЗаписи,
-        'Короткое имя' : короткоеИмя,
-        'Файл-Категория' : категория,
-        'Дата изменения' : датаИзменения,
-        'Добавлен' : датаИзменения,
-        'Время изменения' : датаИзменения,
-        'Файл-Организация' : организация,
-        'ИзмененияАвтор' : Пользователь().Имя} );
+            'Короткое имя' : короткоеИмя,
+            'Файл-Категория' : категория,
+            'Дата изменения' : датаИзменения,
+            'Добавлен' : датаИзменения,
+            'Время изменения' : датаИзменения,
+            'Файл-Организация' : организация,
+            'ИзмененияАвтор' : Пользователь().Имя} );
         if( оВнешнийДокумент.Внести() ){
             var оХранилище = new БазовыйОбъект( "ДО хранилище" );
             оХранилище.ПрочитатьИзКонтекста( {'Образ' : образ,
@@ -1080,10 +800,9 @@ class кЗаявка extends БазовыйОбъект {
      *      режим = 0 - то адрес берем с организации, отправляем уведомление с вопросом
      *      режим = 1, то адрес берем с частного лица, row_id которого записано в нзОрг, отправляем уведомление без вопроса
      *      режим = 2, отправляем уведомление без вопроса, адрес берем с организации
-     * @param заявка - необязательная ссылка на заявку
      * @returns {number} - номер записи сохраненного сообещния в базе
      */
-    ОтправитьУведомление( нзОтправитель, текст, текстHml, тема, кому, режим, заявка ){
+    ОтправитьУведомление( нзОтправитель, текст, текстHml, тема, кому, режим ){
         if( режим != 1 ) {
             var зПараметрУведомление = Query( 'SELECT TOP 1 val.Значение ' +
                 'FROM ~Значения параметров~ val ' +
@@ -1093,14 +812,12 @@ class кЗаявка extends БазовыйОбъект {
             if( зПараметрУведомление.Следующий() && зПараметрУведомление.Значение.toUpperCase() == "нет" ) return -1;
         }
         try {
-            if( заявка == null ) заявка = -1;
             var копия = "";
             var ящик = this.Объект['Карточки-Маршрут>Маршрут-Ящик'];
             // не задан ящик, с которого отправляем уведомления
             var сообщение = new кЭлСообщение(); // сообщение для отправки уведомления
             ящик = сообщение.ПрочитатьЯщик( ящик > 0 ? ящик : "Отправка уведомлений" );
             if( ящик == -1 ) throw new StackError( "Не указан почтовый ящик для отправки уведомлений" );
-
             if( !кому ) { // передали пустой адрес - возьмем с организации
                 var обАдреса = null;
                 if( режим == 1 ) {
@@ -1121,98 +838,173 @@ class кЗаявка extends БазовыйОбъект {
                 'Папка': сообщение.Ящик.ПолучитьПапку( "Уведомления" ),
                 'Папка_Узел': 0,
                 'Организация-Сообщения': нзОтправитель,
-                'Заявка-Почта': заявка,
+                'Заявка-Почта': this.НомерЗаписи,
                 'Признаки': 522 // Обработано, Отправлено, Удалено
             } );
             сообщение.УстановитьОтправителя();
-            /*if( сообщение.СоздатьСообщение(текст, текстHml) &&
-             сообщение.ЭлПочта.ОтправитьПисьмо() && сообщение.Внести() > 0 ) сообщение.УстановитьДату( 'создано,получено' );*/
-            // от греха подальше - просто складываем письма в нужной папке ящика
-            if( сообщение.СоздатьСообщение( текст, текстHml ) && сообщение.Внести() > 0 ) сообщение.УстановитьДату( 'создано,получено' );
+            if( сообщение.СоздатьСообщение(текст, текстHml) && сообщение.ОтправитьПисьмо() && сообщение.Внести() > 0 ) {
+                сообщение.СохранитьТекст(текст);
+                сообщение.УстановитьДату('создано,получено');
+            }
             return сообщение.НомерЗаписи;
         } catch( err ) {
-            if( err instanceof StackError ) err.ОбработкаОшибки();
+            err.ОбработкаОшибки();
         }
+    }
+
+    /**
+     * Возвращает директорию, в которой лежит заявка
+     * @param полный сокращать ли путь длиннее 70 символов, true - не сокращать
+     * @returns {string}
+     */
+    ПолучитьДиректориюЗаявки( полный ){
+        var зПуть = Query(
+
+            ' declare @ticket int SET @ticket = ( SELECT Папки FROM ~ДО карточки~ where ROW_ID = :1 )' +
+            ';WITH Parent AS( ' +
+            '   SELECT ROW_ID, Папки, Примечание ' +
+            '   FROM ~ДО карточки~ WHERE ROW_ID=@ticket ' +
+            '   UNION ALL ' +
+            "   SELECT card.Row_id, card.Папки, card.Примечание + '\\' + Parent.Примечание as Примечание " +
+            "   FROM ~ДО карточки~ card JOIN Parent ON parent.Папки=card.ROW_ID " +
+            ") SELECT Примечание FROM Parent WHERE Папки=-10", 1, "rID,S" );
+
+        var путь = '';
+        зПуть.УстановитьПараметры( this.НомерЗаписи );
+        if( зПуть.Следующий() ) путь = "\\" + зПуть.Примечание;
+        if( путь.length > 70 ) путь =  путь.substr( 0, 33 ) + '\\...\\' + путь.substr( путь.length - 31 );
+        return путь;
     }
 }
 
+
+/**
+ * @class кРабота
+ * @extends БазовыйОбъект
+ */
 class кРабота extends БазовыйОбъект {
+
     /**
      *
-     * @param параметр
+     * @param ROW_ID
+     * @param контекст
      * @param заявка
      */
-    constructor( параметр, заявка ){
-        super( 'ДО задания', -1 );
+    constructor(ROW_ID, контекст, заявка) {
+        super('ДО задания', ROW_ID, контекст);
+
         /**
          * Текущая фаза работы
          * @type {кФаза}
+         * @private
          */
-        this.Фаза;
+        this._Фаза;
+
         /**
          * заявка, заданием которой является данная работа
          * @type {кЗаявка}
+         * @private
          */
-        this.Заявка = заявка;
-        if( параметр ) this.Проинициализировать( параметр );
+        this._Заявка = заявка;
+
         /**
-         * Переход на следующу фазу работы
-         * @type {кПереход}
+         * Список файлов, относящийся к этой работе
+         * @type {array} []БазовыйОбъект
          */
-        this.Переход;
+        this._Файлы;
+
         /**
-         * Массив с параметрами перехода, предлагаемыми по умолчанию для перехода с диалогом
-         * @type {Array}
+         * ROW_ID сотрудника
          */
-        this.ПараметрыПереходаПоУмолчанию = [];
+        this.Пользователь = НомерЗаписи(Пользователь());
+
         this.ЭтоДо = (Задача() == 'Документооборот');
+
+        if (this.НомерЗаписи && !this.ПолученоИзКонтекста) this.Прочитать();
     }
 
     /**
-     * Заполнение базовых членов класса
-     * @param параметр
-     * @returns {boolean}
+     * Файлы прикрепленные непосредственно к работе
+     * @param {array} []БазовыйОбъект файлы
      */
-
-    Проинициализировать( параметр ){
-        var установлено = false;
-        if( typeof параметр == 'string' ) параметр = Number( параметр );
-        if( typeof параметр == 'number' && super.Прочитать(параметр) ){
-            if( !this.Заявка ) this.Заявка = new кЗаявка( this.Объект['Задание-Карточка'] );
-            //return true;
-        } else if( typeof параметр == 'object' ){
-            this.Установить( НомерЗаписи(параметр) );
-            if( super.ПрочитатьИзКонтекста(параметр) ) {
-                if( !this.Заявка ) this.Заявка = new кЗаявка( this.Объект['Задание-Карточка'] );
-                //return true;
-            }
-        }
-        this.Фаза = new кФаза( this, this.Объект["Задание-Фаза"] );
-        //return false;
+    set Файлы(файлы) {
+        this._Файлы = файлы;
     }
+
     /**
-     * Получение списка открытых работ, завичимых от текущей
+     * Файлы прикрепленные непосредственно к работе
+     * @returns {*}
      */
-    ПолучитьЗависимыеРаботы(){
-        var з_ПодЗадания = BufferedReader( `Select ROW_ID
+    get Файлы() {
+        if (this._Файлы) return this._Файлы;
+        throw new StackError("Получение файлов работы не реализовано.");
+    }
+
+    /**
+     *
+     * @param {кЗаявка} заявка {кЗаявка}
+     */
+    set Заявка(заявка) {
+        this.УстановитьСвойство("Заявка", 'Задание-Карточка', "кЗаявка", заявка);
+    }
+
+    /**
+     * Заявка
+     * @returns {кЗаявка}
+     */
+    get Заявка() {
+        return this.ПолучитьСвойство("Заявка", 'Задание-Карточка', "кЗаявка");
+    }
+
+    /**
+     * Текущая фаза
+     * @param {кФаза} фаза
+     */
+    set Фаза(фаза) {
+        this.УстановитьСвойство("Фаза", 'Задание-Фаза', "кФаза", фаза);
+        this._Фаза.Работа = this;
+    }
+
+    /**
+     * Текущая фаза
+     * @returns {кФаза}
+     */
+    get Фаза() {
+        var Фаза = this.ПолучитьСвойство("Фаза", 'Задание-Фаза', "кФаза");
+        if (!Фаза.Работа) Фаза.Работа = this;
+        return Фаза;
+    }
+
+    /**
+     * Приводит объекты к начальному виду
+     */
+    Очистить() {
+        this._Фаза = undefined;
+        this._Заявка = undefined;
+        this._Файлы = undefined;
+        super.Очистить();
+    }
+
+    /**
+     * Получение списка открытых подзаданий
+     */
+    ПолучитьПодзадания() {
+        var з_ПодЗадания = BufferedReader(`Select *
                                                     From ~ДО Задания~
                                                    Where Подзадания = :1 and [Статус завершения] = 0
-                                                 `, 100, "Row,S" );
+                                                 `, 100, "Row,S");
         var мРаботы = [];
-        з_ПодЗадания.УстановитьПараметры( this.НомерЗаписи );
-        while( з_ПодЗадания.Следующий() ){
-            мРаботы[з_ПодЗадания.ROW_ID] = з_ПодЗадания.ROW_ID;
+        з_ПодЗадания.УстановитьПараметры(this.НомерЗаписи);
+        while (з_ПодЗадания.Следующий()) {
+            мРаботы[з_ПодЗадания.ROW_ID] =  new кРабота( з_ПодЗадания.ROW_ID, з_ПодЗадания );
         }
         return мРаботы;
     }
-    ПроверитьПравоНаЗавершение(){
-        if( this.Объект["Задание-Исполнитель"] != НомерЗаписи(Пользователь()) &&
-            !УказанноеПравоНаРесурс( "ЕстьВозможностьПереназначать") && !Супервизор()) {
-            return false;
-        }
-        return true;
 
-    }
+    /**
+     * Возвращает следующий порядковый номер задания в заявке
+     * @returns {Number}
+     */
     ПолучитьСледующийНомер() {
         var зСледующийНомер = Query(`SELECT ISNULL( MAX([Свой номер]), 0 ) [nextnum]
                             FROM ~ДО задания~
@@ -1223,19 +1015,25 @@ class кРабота extends БазовыйОбъект {
         }
         return 1;
     }
-    ПолучитьУточненияПоЗадания(){
-        var зНУточнений = BufferedReader( `SELECT job.row_id, job.Примечание
+
+    /**
+     * Возвращает массив уточнений по заданию
+     * @returns {Array} [] - Примечание
+     */
+    ПолучитьУточненияПоЗаданию() {
+        var зНУточнений = BufferedReader(`SELECT job.row_id, job.Примечание
                                            FROM ~ДО задания~ job JOIN
                                              ( SELECT [Задание-Карточка] as Zk,max( [Свой номер] ) as [Свой номер]
                                                FROM ~ДО задания~ dz2 GROUP BY [Задание-Карточка] )tbl
                                              ON tbl.Zk = job.[Задание-Карточка] AND job.[Свой номер] = tbl.[Свой номер] AND ТипИсполнителя=0,
                                              ~ДО задания~ job1
-                                           WHERE job.[Задание-Карточка]=:1 AND job1.ТипИсполнителя=5 AND job1.[Задание-Карточка]=job.[Задание-Карточка]`, 100, "card,S" );
+                                           WHERE job.[Задание-Карточка]=:1 AND job1.ТипИсполнителя=5 AND job1.[Задание-Карточка]=job.[Задание-Карточка]`, 100, "card,S");
         var мУточнения = [];
-        зНУточнений.УстановитьПараметры( this.Объект["Задание-Карточка"] );
-        while( зНУточнений.Следующий() ){
+        зНУточнений.УстановитьПараметры(this.Объект["Задание-Карточка"]);
+        while (зНУточнений.Следующий()) {
             мУточнения[зНУточнений.ROW_ID] = зНУточнений.Примечание;
         }
+        return мУточнения;
     }
 
     /**
@@ -1254,12 +1052,12 @@ class кРабота extends БазовыйОбъект {
      * @param нашИсполн true если исполнитель из нашей организации
      * @returns {Array}
      */
-    ПолучитьДанныеПредыдущейФазы( нашИсполн ){
+    ПолучитьДанныеПредыдущейФазы(нашИсполн) {
         var допСтр = ``;
-        if( нашИсполн ) {
+        if (нашИсполн) {
             допСтр = " AND dz2.[Задание-Исполнитель] <> -1 ";
         }
-        var зТекФаза = Query( `SELECT Top 1 df.Номер, dkf.Название, st.Row_ID нзИсполнитель, chL.Row_ID нзОрганизацияИсполн,
+        var зТекФаза = Query(`SELECT Top 1 df.Номер, dkf.Название, st.Row_ID нзИсполнитель, chL.Row_ID нзОрганизацияИсполн,
                                    st.ФИО, chL.ФИО Организация
                             FROM ~ДО задания~ dz
                             JOIN (     SELECT [Задание-Карточка] as Zk,max( [Свой номер] ) as [Свой номер]
@@ -1271,10 +1069,10 @@ class кРабота extends БазовыйОбъект {
                             JOIN ~ДО категории фаз~ dkf ON dkf.ROW_ID = df.[Фаза-Категория]
                             LEFT JOIN ~Сотрудники~ st ON st.ROW_ID = dz.[Задание-Исполнитель]
                             LEFT JOIN ~Частные лица~ chL ON chL.ROW_ID = dz.[Задание-Представитель]
-                            WHERE dz.[Задание-Карточка] = :2 AND dz.Row_ID <> :3 `, 1, "S,S,S,S,S,S" );
+                            WHERE dz.[Задание-Карточка] = :2 AND dz.Row_ID <> :3 `, 1, "S,S,S,S,S,S");
         var мРез = [];
-        зТекФаза.УстановитьПараметры( this.НомерЗаписи, this.Объект["Задание-Карточка"], this.НомерЗаписи );
-        if( зТекФаза.Следующий() ){
+        зТекФаза.УстановитьПараметры(this.НомерЗаписи, this.Объект["Задание-Карточка"], this.НомерЗаписи);
+        if (зТекФаза.Следующий()) {
             мРез["НомерФазыВыход"] = зТекФаза.Номер;
             мРез["нзИсполнитель"] = зТекФаза.нзИсполнитель;
             мРез["нзОрганизацияИсполн"] = зТекФаза.нзОрганизацияИсполн;
@@ -1288,234 +1086,401 @@ class кРабота extends БазовыйОбъект {
         }
         return мРез;
     }
-    ПроверитьВозможностьЗавершенияРаботы( ТихийРежим ) {
-        if (!this.Объект) return 0;
+
+    /**
+     * Возвращает объъект с отработанными часами по работе
+     * Поля:
+     * 'Дата'
+     * 'Отработано'
+     * 'КОплате'
+     * @returns {*}
+     */
+    ПолучитьЧасы() {
+        var зДанных = Query('SELECT MAX(h.[Дата ввода]) [Дата], ' +
+            'SUM(60*datepart(hour, h.[Время работы]) + datepart(minute, h.[Время работы]))/60 [Часы], ' +
+            'SUM(60*datepart(hour, h.[Время работы]) + datepart(minute, h.[Время работы]))%60 [Минуты], ' +
+            'SUM(60*datepart(hour, h.[Время к оплате]) + datepart(minute, h.[Время к оплате]))/60 [ОплЧасы], ' +
+            'SUM(60*datepart(hour, h.[Время к оплате]) + datepart(minute, h.[Время к оплате]))%60 [ОплМинуты] ' +
+            'FROM ~ДО часы~ h ' +
+            'WHERE h.[Часы-задание] = :1', 1, "task,S");
+        зДанных.УстановитьПараметры(this.НомерЗаписи);
+        if (зДанных.Следующий()) {
+            var отработано = "";
+            if (зДанных.Часы + зДанных.Минуты > 0) отработано = зДанных.Часы + ":" + зДанных.Минуты.ЧислоСВедущимиНулями(2);
+            var кОплате = "";
+            if (зДанных.ОплЧасы + зДанных.ОплМинуты > 0) кОплате = зДанных.ОплЧасы + ":" + зДанных.ОплМинуты.ЧислоСВедущимиНулями(2);
+            return {
+                'Дата': !зДанных.Дата.isEmpty() ? зДанных.Дата : new Date(),
+                'Отработано': отработано,
+                'КОплате': кОплате
+            };
+        }
+        return {
+            'Дата': new Date(),
+            'Отработано': "",
+            'КОплате': ""
+        };
+    }
+
+    /**
+     * Проверяет достаточно ли данных для завершения задания, а так же наличие ошибок
+     * если задание завершить нельзя, генерирует throw new StackError( сообщиениеОбОшибке );
+     * @param ПараметрыЗавершения список параметров для завершения задания
+     */
+    ПроверитьВозможностьЗавершенияРаботы(ПараметрыЗавершения) {
         var ОшибкаЗавершения = "Завершить задание невозможно, т.к. ";
-        if (this.ПолучитьЗависимыеРаботы().length) {
-            throw  new StackError(ОшибкаЗавершения + "имеются незавершенные подзадания")
+        if (!this.Объект) {
+            throw new StackError(ОшибкаЗавершения + "не определен объект this.Объект");
         }
-        if (!this.ПроверитьПравоНаЗавершение()) {
-            throw  new StackError(ОшибкаЗавершения + "у вас недостаточно прав")
+        if (this.ПолучитьПодзадания().length) {
+            throw new StackError(ОшибкаЗавершения + "имеются незавершенные подзадания.")
         }
-        if (this.ПолучитьУточненияПоЗадания()) {
-            throw  new StackError(ОшибкаЗавершения + "По заданию есть незакрытые уточнения")
+        if ( this.Объект['Подзадания'] == -1 && this.ПолучитьУточненияПоЗаданию().length ) {
+            throw new StackError(ОшибкаЗавершения + "по заданию есть незакрытые уточнения.")
         }
-        if (!ТихийРежим) return 0;
-        if (!this.Переход) throw new StackError(ОшибкаЗавершения + "в задании не указан переход.");
-        if (this.Переход.ПараметрыПерехода.нзИсполнитель == -1
-            && this.Переход.ИсполнительИзНашейОрганизации) throw new StackError(ОшибкаЗавершения + "в задании не указан исполнитель.");
-        if (this.Переход.ПараметрыПерехода.нзОрганизацияИсполн == -1
-            && !this.ИсполнительИзНашейОрганизации) throw new StackError(ОшибкаЗавершения + "в задании не указан сторонний исполнитель.");
-        // Необязательные поля заполним по умолчанию
-        if (!this.Переход.ПараметрыПерехода.ДатНач) this.Переход.ПараметрыПерехода.ДатНач = new Date()
-        if (!this.Переход.ПараметрыПерехода.ДатКнц) this.Переход.ПараметрыПерехода.ДатКнц = new Date();
-        if (!this.Переход.ПараметрыПерехода.ДатАвтоЗав) this.Переход.ПараметрыПерехода.ДатАвтоЗав = new Date();
-        if (!this.Переход.ПараметрыПерехода.Комментарий) this.Переход.ПараметрыПерехода.Комментарий = "";
-        if (this.Переход.ПараметрыПерехода.фОтпСообщение == undefined) this.Работа.ПараметрыПерехода.фОтпСообщение = 0;
+        // Для последнего шага разрешено, т.к. он всегда завершен, но может требоваться возврат к пред. фазе
+        if (this.Объект["Статус завершения"] && !this.Фаза.ПоследнийШаг) {
+            throw new StackError(ОшибкаЗавершения + "задание уже завершено.")
+        }
+        if (ПараметрыЗавершения.нзИсполнительНаш >= 0 && ПараметрыЗавершения.нзСтороннийИсполнитель >= 0) {
+            throw new StackError(ОшибкаЗавершения + "нельзя указывать исполнителей с обеих сторон.");
+        }
+        if (ПараметрыЗавершения.ФазаПерехода
+            && ( !ПараметрыЗавершения.ФазаПерехода.НомерЗаписи || ПараметрыЗавершения.ФазаПерехода.НомерЗаписи < 0 )) {
+            throw new StackError(ОшибкаЗавершения + "фаза перехода некорректна.");
+        }
+    }
+
+    /**
+     * Приводит все незполненные параметры завершения работы к значениям по умолчанию
+     * @param ПараметрыЗавершения
+     * @returns {*}
+     * @private
+     */
+    _УстановитьУмолчанияЗавершения(ПараметрыЗавершения) {
+        if (!ПараметрыЗавершения) ПараметрыЗавершения = {};
+        if (ПараметрыЗавершения.СтатусЗавершения == undefined) {
+            ПараметрыЗавершения.СтатусЗавершения = 1;
+        }
+        if (!ПараметрыЗавершения.Комментарий) {
+            ПараметрыЗавершения.Комментарий = '';
+        }
+        if (!ПараметрыЗавершения.нзИсполнительНаш) {
+            ПараметрыЗавершения.нзИсполнительНаш = -1;
+        }
+        if (!ПараметрыЗавершения.нзСтороннийИсполнитель) {
+            ПараметрыЗавершения.нзСтороннийИсполнитель = -1;
+        }
+        if (ПараметрыЗавершения.фОтпСообщение == undefined) {
+            ПараметрыЗавершения.фОтпСообщение = false;
+        }
+        if (ПараметрыЗавершения.ДатНач == undefined || ПараметрыЗавершения.ДатНач.isEmpty()) {
+            ПараметрыЗавершения.ДатНач = new Date();
+        }
+        if (ПараметрыЗавершения.ДатКнц == undefined || ПараметрыЗавершения.ДатКнц.isEmpty()) {
+            ПараметрыЗавершения.ДатКнц = new Date();
+        }
+        if (!ПараметрыЗавершения.сообщитьоЗадании) {
+            ПараметрыЗавершения.сообщитьоЗадании = true;
+        }
+        // Если фаза перехода есть, должен быть указан исполнитель, если не указан, берем текущего
+        if (!(ПараметрыЗавершения.нзИсполнительНаш >= 0
+            || ПараметрыЗавершения.нзСтороннийИсполнитель >= 0 ) && ПараметрыЗавершения.ФазаПерехода) {
+            ПараметрыЗавершения.нзИсполнительНаш = this.Пользователь;
+        }
+        if (!ПараметрыЗавершения.ОтправитьУведомление) {
+            ПараметрыЗавершения.ОтправитьУведомление = false;
+        }
+        return ПараметрыЗавершения;
+    }
+
+    /**
+     * Выполняет завершение работы и все необходимые для этого действия, включая проверки на корректность
+     *
+     * @param ПараметрыЗавершения = {Object} Параметры:
+     * @param {Number=} ПараметрыЗавершения.СтатусЗавершения=1
+     * @param {String=} ПараметрыЗавершения.Комментарий=""
+     * @param {Number=} ПараметрыЗавершения.нзИсполнительНаш=-1
+     * @param {Number=} ПараметрыЗавершения.нзСтороннийИсполнитель=-1
+     * @param {Boolean=} ПараметрыЗавершения.фОтпСообщение=false Отправка сообщений по почте
+     * @param {Date=} [ПараметрыЗавершения.ДатНач=new Date()]
+     * @param {Date=} [ПараметрыЗавершения.ДатКнц=new Date()]
+     * @param {Date=} ПараметрыЗавершения.ДатАвтоЗав=undefined
+     * @param {Number=} ПараметрыЗавершения.ФазаПерехода=undefined Если не определен, то работ создано не будет
+     * @param {Boolean=} ПараметрыЗавершения.сообщитьоЗадании=true Отправка сообщений в мессенджер
+     * @param {Boolean=} ПараметрыЗавершения.ОтправитьУведомление=false Отправка инф-ции о переходе по email
+     * @returns {Array} Список порожденных работ
+     */
+    Завершить(ПараметрыЗавершения) {
+        ПараметрыЗавершения = this._УстановитьУмолчанияЗавершения(ПараметрыЗавершения);
+        this.ПроверитьВозможностьЗавершенияРаботы(ПараметрыЗавершения);
+        this.Объект["Задание-Редактор"] = this.Пользователь;
+        this.Объект["Статус завершения"] = ПараметрыЗавершения.СтатусЗавершения;
+        this.Объект["Дата завершения"] = new Date();
+        this.Объект["Время завершения"] = new Date();
+        this.Объект["Отметки"] = ПараметрыЗавершения.Комментарий;
+        this.Сохранить();
+        if (ПараметрыЗавершения.фОтпСообщение) {
+            try {
+                this.ОтправитьОтвет(true);
+            }
+            catch (err) {
+                err.ОбработкаОшибки();
+            }
+        }
+        if (ПараметрыЗавершения.ОтправитьУведомление) {
+            // ??? this.Заявка.ОтправитьУведомление(this.Заявка.Объект['Карточка-Организация'], тело, телоHtml, тема, "", 2);
+        }
+
+        //если некуда переходить, завершим
+        if (!ПараметрыЗавершения.ФазаПерехода) return;
+
+        var ФазаПерехода = ПараметрыЗавершения.ФазаПерехода;
+        if (ФазаПерехода.ПоследнийШаг) {
+            this.Заявка.Объект["Дата завершения"] = new Date();
+            this.Заявка.Объект["Время завершения"] = new Date();
+            this.Заявка.Сохранить();
+        }
+        var мНовыеЗадания = this._СоздатьСледующееЗадание(ПараметрыЗавершения);
+        if (!ФазаПерехода.ПоследнийШаг && ПараметрыЗавершения.сообщитьоЗадании) {
+            for (let инд in мНовыеЗадания) {
+                if (!мНовыеЗадания.hasOwnProperty(инд)) continue;
+                new кМессенджер(1, this.Заявка, мНовыеЗадания[инд]).Отправить(ПараметрыЗавершения.нзИсполнитель,
+                    ПараметрыЗавершения.Комментарий, ФазаПерехода.ДанныеКатегории['Название']);
+            }
+        }
+        return мНовыеЗадания;
     }
 
     /**
      *
-     * @returns {boolean}
+     * @param ПараметрыЗавершения
+     * @returns {Array}
+     * @private
      */
-	ЗавершитьРаботуЧерезДиалог(){
-		var длгЗавершение = СоздатьДиалог("ДО - Завершение работы");
-		длгЗавершение.Обработчик.Работа = this;
-        //Заполним параметры по умолчанию
-        for( let Элемент in this.ПараметрыПереходаПоУмолчанию ){
-            if( !this.ПараметрыПереходаПоУмолчанию.hasOwnProperty((Элемент)) ) continue;
-            длгЗавершение[Элемент] = this.ПараметрыПереходаПоУмолчанию[Элемент];
+    _СоздатьСледующееЗадание(ПараметрыЗавершения) {
+        if (!ПараметрыЗавершения.ФазаПерехода) {
+            throw new StackError("Невозможно создать задание, не указана фаза перехода.");
         }
-		var Завершено = длгЗавершение.Выполнить();
-        if( !Завершено ) return false;
-        return true;
-	}
-		
-
-    /**
-     * Завершение работы
-     * @param ТихийРежим true если завершение надо выполнять без диалога
-     *  должен быть определен член this.Переход и доп. параметры
-     *  this.Работа.Переход.ПараметрыПерехода.нзИсполнитель или this.Переход.ПараметрыПерехода.нзОрганизацияИсполн
-     * @returns {boolean}
-     */
-    Завершить( ТихийРежим ){
-        this.ПроверитьВозможностьЗавершенияРаботы( ТихийРежим );
-        ВывестиСтатус("Выполняются операции...");
-
-            // Подзадания завершаем без параметров выбора след. фазы
-            if( this.Объект && this.Объект.Подзадания != -1 ){
-                if( this.Объект['Статус завершения'] != 1 )
-                {
-                    if( !ТихийРежим ) {
-                        var ДО_Завершение_подзадания = СоздатьДиалог("ДО - Завершение подзадания");
-                        ДО_Завершение_подзадания.Обработчик.Работа = this;
-                        ДО_Завершение_подзадания.Обработчик.ДатаЗакрытия = new Date();
-                        //Заполним параметры по умолчанию
-                        for( let Элемент in this.ПараметрыПереходаПоУмолчанию ){
-                            if( !this.ПараметрыПереходаПоУмолчанию.hasOwnProperty((Элемент)) ) continue;
-                            ДО_Завершение_подзадания[Элемент] = this.ПараметрыПереходаПоУмолчанию[Элемент];
-                        }
-                        ДО_Завершение_подзадания.Выполнить();
-                    }
-                    return true;
-                }
-                return false;
-
-            }
-        if( !ТихийРежим ){
-			if( !this.ЗавершитьРаботуЧерезДиалог() )
-				return false;
-        }
-        var мНовыеЗадания = this.СоздатьСледующееЗадание();
-        var Переход = this.Переход;
-        var ФазаПерехода;
-        if (this.Фаза.ВыбратьПредыдущуюФазуиИсполнителя) {
-            ФазаПерехода = Переход.ФазаВход;
-        } else {
-            ФазаПерехода = Переход.ФазаВыход;
-        }
-        if( мНовыеЗадания.length > 0 ){
-                // Меняем статус на текущем задании
-                // TODO лучше доделать сохранение через базовй объект из контекста
-                var оДЗ = Объект( "ДО Задания" )
-                ПрочитатьЗаписьТаблицы( оДЗ, this.НомерЗаписи );
-                оДЗ["Задание-Редактор"]  = НомерЗаписи( Пользователь() );
-                оДЗ["Статус завершения"] = this.Переход.Объект["Статус завершения"];
-                оДЗ["Дата завершения"]   = new Date();
-                оДЗ["Время завершения"]  = new Date();
-                //оДЗ["Отметки"]           = this.Переход.ПараметрыПерехода.Комментарий;
-                СохранитьЗапись( оДЗ );
-
-                if( ФазаПерехода.ПоследнийШаг ){
-                    var оДК = Объект( "ДО карточки" );
-                    ПрочитатьЗаписьТаблицы( оДК, оДЗ["Задание-Карточка"] );
-                    оДК["Дата завершения"] = new Date();
-                    оДК["Время завершения"] = new Date();
-                    СохранитьЗапись( оДК );
-                }
-        }
-
-        // стоит признак что это последний шаг и нужно
-        // все задания закрыть автоматически
-        if( ФазаПерехода.ПоследнийШаг ){
-            for( let инд in мНовыеЗадания ){
-                if( !мНовыеЗадания.hasOwnProperty(инд) ) continue;
-                мНовыеЗадания[инд].Объект["Статус завершения"] = 1;
-                мНовыеЗадания[инд].Объект["Дата завершения"] = new Date();;
-                мНовыеЗадания[инд].Объект["Время завершения"] = new Date();
-                мНовыеЗадания[инд].Сохранить();
-            }
-        } else {
-            for( let инд in мНовыеЗадания ) {
-                if (!мНовыеЗадания.hasOwnProperty(инд)) continue;
-                new кМессенджер(1, this.Заявка, мНовыеЗадания[инд]).Отправить(Переход.ПараметрыПерехода.нзИсполнитель,
-                    this.Переход.ПараметрыПерехода.Комментарий, ФазаПерехода.ДанныеКатегории['Название'] );
-            }
-        }
-        if( this.Переход.ПараметрыПерехода.фОтпСообщение ) { // отправляем сообщение с коментарием завершения
-            this.Объект.Примечание = this.Переход.ПараметрыПерехода.Комментарий;
-            var ошибка = this.ОтправитьОтвет( true );
-            if( ошибка ) Сообщить( ошибка );
-        }
-        return true;
-    }
-
-    СоздатьСледующееЗадание() {
-        if (!this.Переход) {
-            throw new StackError("Не определен переход для завершения работы.")
-        }
-        var Переход = this.Переход;
-        var ФазаПерехода;
-        if (this.Фаза.ВыбратьПредыдущуюФазуиИсполнителя) {
-            ФазаПерехода = Переход.ФазаВход;
-        } else {
-            ФазаПерехода = Переход.ФазаВыход;
-        }
-        var ЗавершитьДо = this.Заявка.ЗавершитьДо();
-        var СледующийНомер = this.ПолучитьСледующийНомер();
-        var сегодня = new Date();
+        var ФазаПерехода = ПараметрыЗавершения.ФазаПерехода;
         var ЗавершитьДо = this.Заявка.Объект["Завершить до"];
-        if (!ЗавершитьДо.isEmpty()) {
+        if (ЗавершитьДо.isEmpty()) {
+            ЗавершитьДо = this.Заявка.ЗавершитьДо();
+        }
+        var сегодня = new Date();
+        if (ФазаПерехода.Объект["План в часах"]) {
             ЗавершитьДо = new кРабочийКалендарь().ПрибавитьРабочиеДни(сегодня, ФазаПерехода.Объект["План в часах"]);
         }
+        сегодня = new Date();
+        var СледующийНомер = this.ПолучитьСледующийНомер();
         var мЗадания = [];
         var Работа = new кРабота();
         Работа.Очистить();
-        Работа.Объект["Завершить до"] = !Переход.ПараметрыПерехода.ДатКнц.isEmpty() ? Переход.ПараметрыПерехода.ДатКнц : ЗавершитьДо;
-        Работа.Объект["Задание-Редактор"] = НомерЗаписи(Пользователь());
+        Работа.Объект["Завершить до"] = !ПараметрыЗавершения.ДатКнц.isEmpty() ? ПараметрыЗавершения.ДатКнц : ЗавершитьДо;
+        Работа.Объект["Задание-Редактор"] = this.Пользователь;
         Работа.Объект["Задание-Карточка"] = this.Заявка.НомерЗаписи;
         Работа.Объект["Задание-Фаза"] = ФазаПерехода.НомерЗаписи;
         Работа.Объект["Предыдущий номер"] = this.Номер;
         Работа.Объект["Папки"] = -10;
-
-        Работа.Объект["Дата выдачи"] = !Переход.ПараметрыПерехода.ДатНач.isEmpty() ? Переход.ПараметрыПерехода.ДатНач : сегодня;
+        Работа.Объект["Дата выдачи"] = !ПараметрыЗавершения.ДатНач.isEmpty() ? ПараметрыЗавершения.ДатНач : сегодня;
         Работа.Объект["Время выдачи"] = сегодня;
         Работа.Объект["Свой номер"] = СледующийНомер;
         Работа.Объект["Срок исполнения"] = ФазаПерехода.Объект["План в часах"];
-        Работа.Объект["Отметки"] = Переход.ПараметрыПерехода.Комментарий || "";
         Работа.Объект["Задание-Наряд"] = -1;
         Работа.Объект["Статус завершения"] = 0;
         Работа.Объект["ТипИсполнителя"] = 0;
         Работа.Объект["Дата автозавершения"] = ФазаПерехода.Автозавершение
-            ? new Date().ПрибавитьДату( "день", this.АвтозавершениеДней ) : "";
-        Работа.Объект["Задание-Исполнитель"] = Переход.ПараметрыПерехода.нзИсполнитель;
-        Работа.Объект["Задание-Представитель"] = Переход.ПараметрыПерехода.нзОрганизацияИсполн;
+            ? new Date().ПрибавитьДату("день", this.АвтозавершениеДней) : "";
+        Работа.Объект["Задание-Исполнитель"] = ПараметрыЗавершения.нзИсполнительНаш;
+        Работа.Объект["Задание-Представитель"] = ПараметрыЗавершения.нзСтороннийИсполнитель;
         Работа.Объект["ТипИсполнителя"] = Работа.Объект["Задание-Представитель"] > 0 ? 1 : 0;
+        // если это последний шаг, сразу закроем
+        if (ФазаПерехода.ПоследнийШаг) {
+            Работа.Объект["Статус завершения"] = 1;
+            Работа.Объект["Дата завершения"] = new Date();
+            Работа.Объект["Время завершения"] = new Date();
+        }
         var резпоз = Работа.Внести();
-        мЗадания[резпоз] = Работа;
+        мЗадания[String(резпоз)] = Работа;
+        if (ФазаПерехода.ПоследнийШаг) return мЗадания;
         // Создаем подзадания, если в маршруте они были указаны
-        Работа.Очистить();
-        ФазаПерехода.ЗаполинтьШаблоны();
-        for( let i in ФазаПерехода.Шаблоны ){
-            if( !ФазаПерехода.Шаблоны.hasOwnProperty(i) ) continue;
-            Работа.Объект["Задание-Исполнитель"] = ФазаПерехода.Шаблоны[i].Объект["Задание-Исполнитель"];
-            Работа.Объект["Отметки"] = ФазаПерехода.Шаблоны[i].Объект["Отметки"];
-            Работа.Объект["Задание-Карточка"] = Работа.Объект["Задание-Карточка"];
-            Работа.Объект["Подзадания"] = резпоз;
-            Работа.Объект["Дата выдачи"] = new Date();
-            Работа.Объект["Время выдачи"] = new Date();
-            Работа.Объект["Свой номер"] = СледующийНомер;
-            Работа.Объект["Задание-Фаза"] = Работа.Объект["Задание-Фаза"];
-            Работа.Объект["Статус завершения"] = 0;
-            Работа.Объект["Папки"] = -10;
-            резпоз = Работа.Сохранить();
-            мЗадания[резпоз] = Работа;
+        var РаботаШаблон;
+        for (let i in ФазаПерехода.Шаблоны) {
+            if (!ФазаПерехода.Шаблоны.hasOwnProperty(i)) continue;
+            var РаботаШаблон = new кРабота(НомерЗаписи(Работа.Объект), Работа.Объект, this.Заявка);
+            РаботаШаблон.Объект["Задание-Исполнитель"] = ФазаПерехода.Шаблоны[i].Объект["Задание-Исполнитель"];
+            РаботаШаблон.Объект["Задание-Редактор"] = this.Пользователь;
+            РаботаШаблон.Объект["Отметки"] = ФазаПерехода.Шаблоны[i].Объект["Отметки"];
+            РаботаШаблон.Объект["Задание-Карточка"] = Работа.Объект["Задание-Карточка"];
+            РаботаШаблон.Объект["Подзадания"] = резпоз;
+            РаботаШаблон.Объект["Дата выдачи"] = new Date();
+            РаботаШаблон.Объект["Время выдачи"] = new Date();
+            РаботаШаблон.Объект["Свой номер"] = СледующийНомер;
+            РаботаШаблон.Объект["Задание-Фаза"] = Работа.Объект["Задание-Фаза"];
+            РаботаШаблон.Объект["Статус завершения"] = 0;
+            РаботаШаблон.Объект["Папки"] = -10;
+            резпоз = РаботаШаблон.Сохранить();
+            мЗадания[String(резпоз)] = РаботаШаблон;
         }
         return мЗадания;
     }
 
-    ЕстьОтмеченныеЧасы(){
-        var зЧасы = BufferedReader( 'SELECT ROW_ID FROM ~ДО Часы~ WHERE [Часы-Задание] = :2 ', 1, "id,S" );
-        зЧасы.УстановитьПараметры( this.НомерЗаписи );
+    ЕстьОтмеченныеЧасы() {
+        var зЧасы = BufferedReader('SELECT ROW_ID FROM ~ДО Часы~ WHERE [Часы-Задание] = :2 ', 1, "id,S");
+        зЧасы.УстановитьПараметры(this.НомерЗаписи);
         return зЧасы.Следующий() ? true : false;
     }
-    Отменить( завершитьДо ){
-        if( this.НомерЗаписи < 0 || !this.Удалить() ) return false;
 
-        var зПоследнейРаботы = BufferedReader( 'SELECT ROW_ID FROM ~ДО задания~ ' +
-            'WHERE [Задание-Карточка] = :1 ORDER BY ROW_ID DESC', 1, "S,S" );
-        зПоследнейРаботы.УстановитьПараметры( this.Заявка.НомерЗаписи );
-        if( зПоследнейРаботы.Следующий() ){
-            this.Проинициализировать( зПоследнейРаботы.ROW_ID );
-            var сейчас = new Date();
-            this.ПрочитатьИзКонтекста( {'Статус завершения' : 0,
-                'Время завершения' : сейчас,
-                'Дата завершения' : сейчас,
-                'Завершить до' : завершитьДо} );
-            return this.Сохранить();
+    /**
+     * Добавляет дополнение к текущему заданию
+     * @param отправитьУведомление - отправить ли уведомление на email
+     */
+    ПринятьДополнение(отправитьУведомление) {
+        if (this.Объект.ТипИсполнителя < 5 || this.Объект.ТипИсполнителя > 9) {
+            throw new StackError("Принять можно только дополнения.");
         }
-        return false;
+
+        var файлыID = ``;
+        var файлыИмена = ``;
+        for (let файл of this.Файлы) {
+            файлыID += `,` + файл.НомерЗаписи;
+            файлыИмена += `,` + файл.Объект['Короткое имя'];
+        }
+        if (файлыID) {
+            файлыИмена = файлыИмена.substr(1);
+            файлыID = файлыID.substr(1);
+            var кВнДок = Command("UPDATE ~ДО внешние документы~ SET [Файл-Карточка] = :1 WHERE ROW_ID IN(" + файлыID + ")", 1, "card,S");
+            кВнДок.Выполнить(this.Заявка.НомерЗаписи);
+            кВнДок.Завершить();
+        }
+
+        var примечание = "Принято в текущую заявку. " + ФИО(Пользователь().ФИО) + (файлыИмена ? ". Файлы:\n" + файлыИмена : "");
+        this.Объект['ТипИсполнителя'] = 6;
+        this.Объект['Задание-Редактор'] = this.Пользователь;
+        this.Объект['Примечание'] = this.Объект['Примечание'] + "\n" + примечание;
+        this.Сохранить();
+
+        this.Заявка.Объект['Примечание'] += ( "\n\n" + this.Объект['Отметки'] + "\n" + примечание );
+        this.Заявка.Сохранить();
+
+        if (отправитьУведомление) {
+            var тема = "Дополнения к заявке № " + this.Заявка.Объект['Номер'] + " от " + this.Заявка.Объект['Дата создания'].format('rusDate') +
+                " по договору " + this.Заявка.Договор.Объект.Номер + "/" + this.Заявка.Договор.Объект.Тема;
+            var тело = `По заявке № ` + this.Заявка.Объект['Номер'] + " от " + this.Заявка.Объект['Дата создания'].format('rusDate') +
+                ":\n\n" + this.Объект['Отметки'] + "\n\nпринято Исполнителем " + ФИО(Пользователь().ФИО);
+            var телоHtml = `<div>По заявке № ` + this.Заявка.Объект['Номер'] + " от " + this.Заявка.Объект['Дата создания'].format('rusDate') +
+                ":</div><br><div>" + this.Объект['Отметки'] + "</div><br><div>принято Исполнителем " + ФИО(Пользователь().ФИО) + "</div>";
+            this.Заявка.ОтправитьУведомление(this.Заявка.Объект['Карточка-Организация'], тело, телоHtml, тема, "", 2);
+        }
     }
-    ОтправитьОтвет( добавитьКоммент ){
-        if( !this.Заявка || this.Заявка.НомерЗаписи < 0 ) throw new StackError( "Не указана заявка\n Отправка невозможна." );
+
+    /**
+     * Отклоняет дополнение по работе, если оно еще не принято и является дополнением
+     * @param комментарий - какой комментарий прикрепить к дополнению
+     * @param отправитьУведомление - отправить ли уведомление на email
+     */
+    ОтклонитьДополнение(комментарий, отправитьУведомление) {
+        if (this.Объект.ТипИсполнителя < 5 || this.Объект.ТипИсполнителя > 9) {
+            throw new StackError("Отклонять можно только дополнения.");
+        }
+
+        var примечание = "Отклонено " + ФИО(Пользователь().ФИО) + " по причине:\n" + комментарий;
+        this.Объект['ТипИсполнителя'] = 8;
+        this.Объект['Задание-Редактор'] = this.Пользователь;
+        this.Объект['Примечание'] = this.Объект['Примечание'] + "\n" + примечание;
+        this.Сохранить();
+
+        var файлыID = ``;
+        for (let файл of this.Файлы) {
+            файлыID += `,` + файл.НомерЗаписи;
+        }
+        if (файлыID) {
+            файлыID = файлыID.substr(1);
+            var кВнДок = Command(`UPDATE ~ДО внешние документы~ SET Примечание = :1, Признаки = Признаки &~ 1 WHERE ROW_ID IN(` + файлыID + `);`, 1, "komm,A");
+            кВнДок.Выполнить("Отклонено " + ФИО(Пользователь().ФИО) + ". Причину см. в истории заявки.");
+            кВнДок.Завершить();
+        }
+
+        if (отправитьУведомление) {
+            var тема = "Дополнения к заявке № " + this.Заявка.Объект['Номер'] + " от " + this.Заявка.Объект['Дата создания'].format('rusDate') +
+                " по договору " + this.Заявка.Договор.Объект.Номер + "/" + this.Заявка.Договор.Объект.Тема;
+            var тело = "По заявке № " + this.Заявка.Объект['Номер'] + " от " + this.Заявка.Объект['Дата создания'].format('rusDate') +
+                ":\n\n" + this.Объект.Отметки + "\n\nотклонено Исполнителем " + ФИО(Пользователь().ФИО) + " по причине:\n" + комментарий;
+            var телоHtml = `<div>По заявке № ` + this.Заявка.Объект['Номер'] + " от " + this.Заявка.Объект['Дата создания'].format('rusDate') +
+                ":</div><br><div>" + this.Объект.Отметки + "</div><br><div>отклонено Исполнителем " + ФИО(Пользователь().ФИО) + " по причине:</div><div>" + комментарий + "</div>";
+            this.Заявка.ОтправитьУведомление(this.Заявка.Объект['Карточка-Организация'], тело, телоHtml, тема, "", 2);
+        }
+    }
+
+    /**
+     * Создает заявку по дополнению к работе, если оно еще не принято и является дополнением
+     * @param отправитьУведомление - отправить ли уведомление на email
+     */
+    СоздатьЗаявкуПоДополнению(отправитьУведомление) {
+        if (this.Объект.ТипИсполнителя < 5 || this.Объект.ТипИсполнителя > 9) {
+            throw new StackError("Отдельные заявки создавать можно только по дополнениям.");
+        }
+
+        var заявка = new кЗаявка();
+        заявка.Очистить();
+        КопироватьЗапись(заявка.Объект, this.Заявка.Объект, 2);
+        заявка.Объект['Карточка-Заявка'] = this.НомерЗаписи;
+        заявка.Объект['Дополнительная работа'] = this.Заявка.НомерЗаписи;
+        заявка.Объект['Автор'] = this.Пользователь;
+        заявка.Объект['Дата создания'] = new Date();
+        заявка.Объект['Время создания'] = new Date();
+        заявка.Объект['Завершить до'] = заявка.ЗавершитьДо();
+        заявка.Объект['Примечание'] = this.Объект['Отметки'];
+        заявка.Объект['Номер'] = заявка.НовыйНомер();
+        var тема = "По заявке № " + this.Заявка.Объект['Номер'] + " от " + this.Заявка.Объект['Дата создания'].format("rusDate");
+        тема += "\n\n" + this.Объект['Отметки'] + "\n\nоформлено новой заявкой № " + заявка.Объект['Номер'] +
+            " от " + заявка.Объект['Дата создания'].format("rusDate");
+        заявка.Объект['Тема'] = тема;
+        заявка.Сохранить();
+
+        var файлыID = ``;
+        var файлыИмена = ``;
+        for (let файл of this.Файлы) {
+            файлыID += `,` + файл.НомерЗаписи;
+            файлыИмена += `,` + файл.Объект['Короткое имя'];
+        }
+        if (файлыID) {
+            файлыИмена = файлыИмена.substr(1);
+            файлыID = файлыID.substr(1);
+            var кВнДок = Command("UPDATE ~ДО внешние документы~ SET [Файл-Карточка] = :1 WHERE ROW_ID IN(" + файлыID + ")", 1, "card,S");
+            кВнДок.Выполнить(this.Заявка.НомерЗаписи);
+            кВнДок.Завершить();
+        }
+
+        this.Объект['ТипИсполнителя'] = 7;
+        this.Объект['Задание-Редактор'] = this.Пользователь;
+        var примечание = "Принято. Создана новая заявка № " + заявка.Объект.Номер + ". " + ФИО(Пользователь().ФИО) +
+            (файлыИмена ? ". Приняты новые файлы:\n" + файлыИмена : "");
+        this.Объект['Примечание'] = this.Объект['Примечание'] + "\n" + примечание;
+        this.Сохранить();
+
+        if (отправитьУведомление) {
+            var телоHtml = "<div>По заявке № " + this.Заявка.Объект['Номер'] + " от "
+                + this.Заявка.Объект['Дата создания'].format("rusDate") +
+                ":</div><br><div>" + this.Объект.Отметки + "</div><br><div>оформлено новой заявкой № "
+                + заявка.Объект.Номер + " от " + заявка.Объект['Дата создания'].format("rusDate") + "</div>";
+            заявка.ОтправитьУведомление(заявка.Объект['Карточка-Организация'], тема, телоHtml, примечание, "", 2)
+        }
+    }
+
+    /**
+     * Формирует письмо по работе
+     * @param добавитьКоммент
+     */
+    ОтправитьОтвет(добавитьКоммент) {
+        if (!this.Заявка || this.Заявка.НомерЗаписи < 0) throw new StackError("Не указана заявка\n Отправка невозможна.");
         var кому = this.Заявка.Объект['ЭлПочта'];
         var организация = this.Заявка.Объект['Карточка-Организация'];
-        if( !кому ) { // не было адреса для ответа - возьмем с организации
-            if( this.ЭтоДо ) {
+        if (!кому) { // не было адреса для ответа - возьмем с организации
+            if (this.ЭтоДо) {
                 кому = this.Заявка.Объект['Карточка-Организация>email'];
             } else {
-                if( this.Заявка.Объект['КлиентТип'] == "Частное лицо" ) {
+                if (this.Заявка.Объект['КлиентТип'] == "Частное лицо") {
                     кому = this.Заявка.Объект['Заявка-Частное лицо>email']
                     организация = -1;
                 } else {
@@ -1523,50 +1488,56 @@ class кРабота extends БазовыйОбъект {
                 }
             }
         }
-        var мАдрес = кому.match( /<[A-Za-z0-9_@\.\-]+>/i );
-        if( мАдрес ) кому = мАдрес[0];
-        if( !кому ) throw new StackError( "На заявке не указана электронная почта для ответа" );
-
-            // смотрим ящик для отправки писем на маршруте
+        var мАдрес = кому.match(/<[A-Za-z0-9_@\.\-]+>/i);
+        if (мАдрес) кому = мАдрес[0];
+        if (!кому) throw new StackError("На заявке не указана электронная почта для ответа");
+        // смотрим ящик для отправки писем на маршруте
         var сообщение = new кЭлСообщение(); // сообщение для отправки уведомления
         var ящик = this.Заявка.Объект['Карточки-Маршрут>Маршрут-Ящик'];
-        ящик = сообщение.ПрочитатьЯщик( ящик > 0 ? ящик : "Отправка уведомлений" );
-        if( ящик == -1 ) throw new StackError( "Не указан почтовый ящик для отправки ответа по заявке" );
+        ящик = сообщение.ПрочитатьЯщик(ящик > 0 ? ящик : "Отправка уведомлений");
+        if (ящик == -1) throw new StackError("Не указан почтовый ящик для отправки ответа по заявке");
 
-        var копия = new кОрганизация( организация ).ЭлектронныйАдресОбязательнойКопии();
+        var копия = new кОрганизация(организация).ЭлектронныйАдресОбязательнойКопии();
         var номер = this.Заявка.Объект['Номер'] + (this.Заявка.Объект['СтороннийНомер'] ? " / " + this.Заявка.Объект['СтороннийНомер'] : "" );
         var тема = "Стек: по заявке № " + номер +
             " от " + this.Заявка.Объект['Дата создания'].format('rusDate');
         var текст = '';
-        if( !сообщение.Ящик.ЭтоHtml() ) {
+        if (!сообщение.Ящик.ЭтоHtml()) {
             текст = 'По Вашей заявке № ' + номер +
                 " от " + this.Заявка.Объект['Дата создания'].format('rusDate') + "\n" +
-                this.Заявка.Объект['Примечание'] +
-                ( this.Объект.Примечание && добавитьКоммент ? "\n\nСообщаю следующее:\n" + this.Объект.Примечание : "" );
+                this.Заявка.Объект['Отметки'] +
+                ( this.Объект.Отметки && добавитьКоммент ? "\n\nСообщаю следующее:\n" + this.Объект.Отметки : "" );
         } else {
             текст = '<div><strong>По Вашей заявке № ' + номер +
                 " от " + this.Заявка.Объект['Дата создания'].format('rusDate') + "</strong></div><div><i>" +
-                this.Заявка.Объект['Примечание'] + "</i></div>" +
-                ( this.Объект.Примечание && добавитьКоммент ? "<br><div><strong>Сообщаю следующее:</strong></div><div>" + this.Объект.Примечание : "" ) + "</div>";
+                this.Заявка.Объект['Отметки'] + "</i></div>" +
+                ( this.Объект.Отметки && добавитьКоммент ? "<br><div><strong>Сообщаю следующее:</strong></div><div>" + this.Объект.Отметки : "" ) + "</div>";
         }
-        сообщение.ПрочитатьИзКонтекста( {
+        сообщение.ПрочитатьИзКонтекста({
             'Кому': кому,
-            'Копия' : копия,
+            'Копия': копия,
             'Тема': тема,
-            'Папка' : сообщение.Ящик.НомерЗаписи,
+            'Папка': сообщение.Ящик.НомерЗаписи,
             'Приоритет': 0,
             'Организация-Сообщения': организация,
-            'Заявка-Почта' : this.Объект['Задание-Карточка']
-        } );
-        сообщение.Ответить( 'ДОборот', текст, this.НомерЗаписи );
-        return "";
+            'Заявка-Почта': this.Объект['Задание-Карточка']
+        });
+        сообщение.Ответить('ДОборот', текст, this.НомерЗаписи);
     }
 }
+
 /**
  * @class кПереход
+ * @extends БазовыйОбъект
  */
 class кПереход extends БазовыйОбъект{
-    constructor( Фаза, НомерЗаписи, Контекст ){
+    /**
+     *
+     * @param НомерЗаписи
+     * @param Контекст
+     * @param Фаза
+     */
+    constructor( НомерЗаписи, Контекст, Фаза ){
         super( "ДО переходы", НомерЗаписи, Контекст );
         this.Фаза = Фаза;
         /**
@@ -1598,7 +1569,7 @@ class кПереход extends БазовыйОбъект{
          * Назначить исполнителя с предыдущей фазы
          * @type {boolean}
          */
-        this.НазначитьПредыдущегоИсполинетля = false;
+        this.НазначитьПредыдущегоИсполинителя = false;
         /**
          * Требует изменить срок завершения
          * @type {boolean}
@@ -1622,14 +1593,9 @@ class кПереход extends БазовыйОбъект{
         /**
          * Исполнители перехода
          * @type {{}}
+         * @private
          */
-        this.Исполнитель = {};
-
-        /**
-         * Список параметров, выбранных для осуществления перехода
-         * @type {{}}
-         */
-        this.ПараметрыПерехода = {}
+        this._Исполнитель;
 
         /**
          * Фаза перехода
@@ -1647,51 +1613,54 @@ class кПереход extends БазовыйОбъект{
             this.Инициализировать();
         }
     }
-
+    /**
+     * устанавливает фазу, на которую будет совершен переход
+     */
+    set ФазаВыход( Фаза ) {
+        this._ФазаВыход = Фаза;
+    }
     /**
      * Возвращает фазу, на которую будет совершен переход
      */
     get ФазаВыход() {
         if( !this._ФазаВыход || this._ФазаВыход.НомерЗаписи != this.Объект["Фаза-Выход"] ){
-            this._ФазаВыход = new кФаза(null,this.Объект["Фаза-Выход"])
+            this._ФазаВыход = new кФаза(this.Объект["Фаза-Выход"], null, this.Фаза.Работа );
         }
         return this._ФазаВыход;
     }
 
     /**
+     * устанавливает фазу, c которой был совершен переход
+     */
+    set ФазаВход( Фаза ) {
+        this._ФазаВход = Фаза;
+    }
+    /**
      * Возвращает фазу, с которой был совершен переход
      */
     get ФазаВход(){
         if( !this._ФазаВход || this._ФазаВход.НомерЗаписи != this.Объект["Фаза-Вход"] ){
-            this._ФазаВход = new кФаза(null,this.Объект["Фаза-Вход"])
+            this._ФазаВход = new кФаза(this.Объект["Фаза-Вход"], null, this.Фаза.Работа);
         }
         return this._ФазаВход;
     }
-    Инициализировать(){
-        if( !this.НомерЗаписи ){
-            throw  new StackError( "Невозможно инициализировать переход с номером записи " + this.НомерЗаписи );
-        }
-        this.ИсполнительИзНашейОрганизации = true;
-        this.СостояниеПризавершении          = this.Объект["Статус завершения"];
-        this.ИсполнительИзНашейОрганизации   = this.Объект["ТипСотрудника"] ? false : true;
-        this.ТребуетИсполнителя              = this.Объект.ДополнительныеФлаги % 2   >= 1  ? true : false;
-        this.ТребуетОрганизацию              = this.Объект.ДополнительныеФлаги % 4   >= 2  ? true : false;
-        this.ТребуетСрокИсполнения           = this.Объект.ДополнительныеФлаги % 8   >= 4  ? true : false;
-        this.НазначитьПредыдущегоИсполинетля = this.Объект.ДополнительныеФлаги % 16  >= 8  ? true : false;
-        this.ТребуетСменыСрокаЗавершения     = this.Объект.ДополнительныеФлаги % 32  >= 16 ? true : false;
-        this.ОтправитьУведомлениеКлиенту     = this.Объект.ДополнительныеФлаги % 64  >= 32 ? true : false;
-        this.МожноУказатьПериодРаботы        = this.Объект.ДополнительныеФлаги % 128 >= 64 ? true : false;
-        this.ПолучитьИсполнителей();
-    }
-    ПолучитьИсполнителей() {
-        this.Исполнитель.нзОрганизация = -1;
-        this.Исполнитель.Организация = "";
-        this.Исполнитель.нзПредставитель = -1;
-        this.Исполнитель.нзСотрудник = -1;
-        this.Исполнитель.Сотрудник = "";
-        this.Исполнитель.Представитель = "";
-        if (this.НазначитьПредыдущегоИсполинетля && this.Фаза.Работа ) {
-            var поискРаботы = BufferedReader(`SELECT TOP 1 zad.[Задание-Исполнитель], zad.[Задание-Наряд],
+
+    /**
+     * Получение исполнителей по переходу
+     * @returns {*}
+     */
+    get Исполнитель() {
+        if( this._Исполнитель ) return this._Исполнитель;
+        this._Исполнитель = {};
+        this._Исполнитель.нзОрганизация = -1;
+        this._Исполнитель.Организация = "";
+        this._Исполнитель.нзПредставитель = -1;
+        this._Исполнитель.нзСотрудник = -1;
+        this._Исполнитель.Сотрудник = "";
+        this._Исполнитель.Представитель = "";
+        // Такая проверка нужна для стартовых фаз, когда ничего не заполнено, но галки поставить в маршруте могут
+        if (this.НазначитьПредыдущегоИсполинителя && this.Фаза.Работа  && this.Фаза.Работа.Объект ) {
+            var поискРаботы = Query(`SELECT TOP 1 zad.[Задание-Исполнитель], zad.[Задание-Наряд],
                                                         zad.Папки, zad.[Задание-Представитель]
                                            FROM ~ДО Задания~ zad
                                               JOIN ~ДО Фазы~ doFaz ON zad.[Задание-Фаза] = doFaz.Row_ID
@@ -1699,54 +1668,78 @@ class кПереход extends БазовыйОбъект{
                                            WHERE zad.[Задание-Карточка] = :2  and zad.[Подзадания] = -1
                                            ORDER BY zad.ROW_ID desc`, 1, "S,S,S,S");
 
-            поискРаботы.УстановитьПараметры(this.Объект["Предыдущая фаза"], this.Фаза.Работа["Задание-Карточка"]);
+            поискРаботы.УстановитьПараметры(this.Объект["Предыдущая фаза"], this.Фаза.Работа.Объект["Задание-Карточка"]);
             if (поискРаботы.Следующий()) {
-                this.Исполнитель.нзПредставитель = поискРаботы["Задание-Представитель"];
-                this.Исполнитель.нзСотрудник = поискРаботы["Задание-Исполнитель"];
-                var Сотрудник = new кСотрудник(this.Исполнитель.нзСотрудник)
+                this._Исполнитель.нзПредставитель = поискРаботы["Задание-Представитель"];
+                this._Исполнитель.нзСотрудник = поискРаботы["Задание-Исполнитель"];
+                var Сотрудник = new кСотрудник(this._Исполнитель.нзСотрудник)
+            } else{
+                var поискСотрудника = Query(
+                        ` SELECT TOP 1 [Исполнитель по умолчанию]
+                            FROM ~ДО фазы~ df
+                            WHERE ROW_ID = :1 `, 1, "rID,S" );
+                поискСотрудника.УстановитьПараметры( this.Объект["Предыдущая фаза"] );
+                while( поискСотрудника.Следующий() ){
+                    this._Исполнитель.нзПредставитель = -1;
+                    this._Исполнитель.нзСотрудник =  поискСотрудника["Исполнитель по умолчанию"];
+                    var Сотрудник = new кСотрудник( this._Исполнитель.нзСотрудник );
+                }
             }
         }
-        if ( this.Фаза.ИсполнительПоУмолчанию != -1 ) {
-            var Сотрудник = new кСотрудник(this.Фаза.ИсполнительПоУмолчанию);
-            this.Исполнитель.нзОрганизация = Сотрудник.ПолучитьНзОрганизации();
-            this.Исполнитель.нзСотрудник = this.Фаза.ИсполнительПоУмолчанию;
+        if ( this.ФазаВыход.ИсполнительПоУмолчанию != -1 && this.ИсполнительИзНашейОрганизации ) {
+            var Сотрудник = new кСотрудник(this.ФазаВыход.ИсполнительПоУмолчанию);
+            this._Исполнитель.нзОрганизация = Сотрудник.ПолучитьНзОрганизации();
+            this._Исполнитель.нзСотрудник = this.ФазаВыход.ИсполнительПоУмолчанию;
         }
-
-
         // Если исполнитель не указан и организация сторонняя, проверим, если представитель всего 1, возмем его
-        if ( this.Исполнитель.нзПредставитель == -1 && !this.ИсполнительИзНашейОрганизации ) {
+        if ( this._Исполнитель.нзПредставитель == -1 && !this.ИсполнительИзНашейОрганизации ) {
             var мПредставители = кОрганизация.ПолучитьПредставителейОрганизации(this.НомерЗаписи);
             var i = 0;
             for( let Представитель in мПредставители ){
                 if( мПредставители.hasOwnProperty(Представитель) ) continue;
                 if( i == 1 ){
-                    this.Исполнитель.нзПредставитель = -1;
+                    this._Исполнитель.нзПредставитель = -1;
                     break;
                 }
-                this.Исполнитель.нзПредставитель = мПредставители[Представитель].ROW_ID;
+                this._Исполнитель.нзПредставитель = мПредставители[Представитель].ROW_ID;
                 i++;
             }
         }
-        /** ??????
-        Если( мИсполн.нзОрг == -1 И мИсполн.ИмяПред == "" И зПереходы.ТипСотрудника == 1 И 'оТекЗадание.Задание-Карточка>Карточка-Представитель' != -1 )
-        {
-            мИсполн.нзПред = 'оТекЗадание.Задание-Карточка>Карточка-Представитель';
-            мИсполн.ИмяОрг = мИсполн.ИмяПред = Есть( мИсполн.нзПред ) ? ФИОПредставителя( мИсполн.нзПред ) : "";
+        if( !this.ИсполнительИзНашейОрганизации && this._Исполнитель.нзПредставитель == -1 ){
+            this._Исполнитель.нзПредставитель = this.Фаза.Работа.Заявка.Объект['Карточка-Представитель'];
         }
-         */
-        this.Исполнитель.Сотрудник = this.Исполнитель.нзСотрудник != -1 ? Сотрудник.Объект["ФИО"] : "";
-        if( this.Исполнитель.нзПредставитель != -1 ) {
+        this._Исполнитель.Сотрудник = this._Исполнитель.нзСотрудник != -1 ? Сотрудник.Объект["ФИО"] : "";
+        if( this._Исполнитель.нзПредставитель != -1 ) {
             var з_пред = Query(`Select Top 1 ФИО From ~Частные лица~ Where ROW_ID = :1`, 10, "ROW,S");
-            з_пред.УстановитьПараметры(this.Исполнитель.нзПредставитель);
-            this.Исполнитель.Представитель = з_пред.Следующий() ? з_пред.ФИО : "";
-        } else {
-            this.Исполнитель.Представитель = "";
+            з_пред.УстановитьПараметры(this._Исполнитель.нзПредставитель);
+            this._Исполнитель.Представитель = з_пред.Следующий() ? з_пред.ФИО : "";
         }
-        return this.Исполнитель;
+        this._Исполнитель.Организация = this._Исполнитель.Представитель;
+        return this._Исполнитель;
+    }
+    Инициализировать(){
+        if( !this.НомерЗаписи ){
+            throw  new StackError( "Невозможно инициализировать переход с номером записи " + this.НомерЗаписи );
+        }
+        super.Прочитать( this.НомерЗаписи );
+        this.ИсполнительИзНашейОрганизации = true;
+        this.СостояниеПризавершении          = this.Объект["Статус завершения"];
+        this.ИсполнительИзНашейОрганизации   = this.Объект["ТипСотрудника"] ? false : true;
+        this.ТребуетИсполнителя              = this.Объект.ДополнительныеФлаги % 2   >= 1  ? true : false;
+        this.ТребуетОрганизацию              = this.Объект.ДополнительныеФлаги % 4   >= 2  ? true : false;
+        this.ТребуетСрокИсполнения           = this.Объект.ДополнительныеФлаги % 8   >= 4  ? true : false;
+        this.НазначитьПредыдущегоИсполинителя = this.Объект.ДополнительныеФлаги % 16  >= 8  ? true : false;
+        this.ТребуетСменыСрокаЗавершения     = this.Объект.ДополнительныеФлаги % 32  >= 16 ? true : false;
+        this.ОтправитьУведомлениеКлиенту     = this.Объект.ДополнительныеФлаги % 64  >= 32 ? true : false;
+        this.МожноУказатьПериодРаботы        = this.Объект.ДополнительныеФлаги % 128 >= 64 ? true : false;
+        this._Исполнитель = undefined;
+        this._ФазаВыход = undefined;
+        this._ФазаВход = undefined;
     }
 }
 /**
  * @class кФаза
+ * @extends БазовыйОбъект
  */
 class кФаза extends БазовыйОбъект{
     /**
@@ -1755,10 +1748,10 @@ class кФаза extends БазовыйОбъект{
      * @param НомерЗаписи
      * @param Контекст
      */
-    constructor( Работа, НомерЗаписи, Контекст ){
-        super( 'ДО фазы', НомерЗаписи, Контекст );
-        if( !Контекст ){
-            this.Прочитать( НомерЗаписи );
+    constructor( НомерЗаписи, Контекст, Работа ) {
+        super('ДО фазы', НомерЗаписи, Контекст);
+        if (!Контекст) {
+            this.Прочитать(НомерЗаписи);
         }
 
         this.Работа = Работа;
@@ -1773,21 +1766,20 @@ class кФаза extends БазовыйОбъект{
          */
         this.Срок = 0;
         /**
-         * /TODO что это??
          * @type {number}
          */
         this.Автовыполнение = 0;
         /**
          * Куда переходить при автовыполнении
-         * TODO наверное класс надо
          * @type {number}
          */
         this.ПереходПриУспехе = 0;
         /**
          * массив переходов с элементами кПереход
          * @type {Array}
+         * @private
          */
-        this.Переходы = [];
+        this._Переходы;
         /**
          * Завершать автоматически по истечении срока, true - завершать, false - нет
          * @type {boolean}
@@ -1841,30 +1833,38 @@ class кФаза extends БазовыйОбъект{
         /**
          * Список шаблонов перехода
          * @type {БазовыйОбъект}
+         * @private
          */
-        this.Шаблоны =[];
-        if( this.НомерЗаписи ){
-            this.Проинициализировать();
-        }
-        this.ДанныеКатегории = [];
+        this._Шаблоны;
+
+        this.ДанныеКатегории = {
+            Название: "",
+            Автовыполнение: 0,
+            Цвет: ""
+        };
+        this.Проинициализировать();
     }
 
     /**
      * Заполнение массива this.Шаблоны шаблоны переходов фаз
      */
-    ЗаполинтьШаблоны(){
+    get Шаблоны(){
+        if( this._Шаблоны ) return this._Шаблоны;
+        this._Шаблоны = [];
         if( !this.зШаблоны ) {
             this.зШаблоны = Query( ` SELECT * FROM ~ДО задания шаблон~ WHERE [Задание-Фаза] = :1 `, 10, "rID,S" );
         }
         this.зШаблоны.УстановитьПараметры( this.НомерЗаписи );
         while( this.зШаблоны.Следующий() ){
-            this.Шаблоны[this.зШаблоны.ROW_ID] = new БазовыйОбъект( "ДО задания шаблон", this.зШаблоны.ROW_ID, this.зШаблоны );
+            this._Шаблоны[this.зШаблоны.ROW_ID] = new БазовыйОбъект( "ДО задания шаблон", this.зШаблоны.ROW_ID, this.зШаблоны );
         }
     }
     /**
      *
      */
-    ЗаполнитьПереходы(){
+    get Переходы(){
+        if( this._Переходы ) return this._Переходы;
+        this._Переходы = {};
         if( !this.зПереходы ) {
             this.зПереходы = Query(
                 ` SELECT ROW_ID, [Фаза-Вход], [Фаза-Выход], [Автовыполнение], [Интервал], [Название]
@@ -1875,66 +1875,151 @@ class кФаза extends БазовыйОбъект{
         }
         this.зПереходы.УстановитьПараметры( this.НомерЗаписи );
         while( this.зПереходы.Следующий() ){
-            this.Переходы[this.зПереходы.ROW_ID] = new кПереход( this, this.зПереходы.ROW_ID, this.зПереходы );
+            this._Переходы[String(this.зПереходы.ROW_ID)] = new кПереход( this.зПереходы.ROW_ID, this.зПереходы, this );
         }
+
+        /**
+         * Если данная фаза предусматривает возврат на предыдущую фазу, добавим ее в список переходов
+         */
+        if( this.ВыбратьПредыдущуюФазуиИсполнителя  ){
+            if( this.Работа.Объект ){
+                // на предыдущую фазу возвращаем на сторону др. организации, что бы перешагнуть переходы между
+                //сотрудниками одной организации
+                if( this.Работа.Объект['Задание-Исполнитель'] != -1 ) {
+                    var допСтр = " AND dz.[Задание-Исполнитель] = -1 ";
+                } else{
+                    var допСтр = " AND dz.[Задание-Исполнитель] != -1 ";
+                }
+                // Да, огромный запрос, Да, скорей всего можно с этим что то сделать
+                var зПредыдущаяРабота = Query(
+                    ` DECLARE @ticket int SET @ticket  = :1
+                      DECLARE @work int SET @work  = :2
+	                   SELECT st.ROW_ID as st_ID, st.ФИО as st_FIO, chL.ROW_ID as chL_ID
+	                    , chL.[Организация-Частные лица] as chl_orgID,  chL.ФИО as chl_FIO
+	                    , dz.stageID as stage_ID, dz.ROW_ID as workID
+	                    , dz.stage_name as stage_name
+	                     FROM ( SELECT TOP 1 dz.[Задание-Исполнитель], dz.[Задание-Представитель]
+						          , df.ROW_ID as stageID, dkf.Название as stage_name, dz.ROW_ID
+                                  FROM ~ДО Задания~ dz
+                                  JOIN ~ДО фазы~ df ON dz.[Задание-Фаза] = df.ROW_ID
+                                  JOIN stack.[ДО категории фаз] dkf ON dkf.ROW_ID = df.[Фаза-Категория]
+			                     WHERE dz.[Задание-Карточка] = @ticket
+			                      AND df.[Последний шаг] = 0  ` + допСтр
+                    + ` AND dz.Подзадания = -1 AND dz.ROW_ID < @work
+			                  ORDER BY dz.ROW_ID DESC ) dz
+                    LEFT JOIN ~Сотрудники~ st ON st.ROW_ID = dz.[Задание-Исполнитель]
+                    LEFT JOIN ~Частные лица~ chL ON chL.ROW_ID = dz.[Задание-Представитель] `
+                    , 1, "ticket,S,work,S" );
+                // Получение перехода, имеющего требуемые входящую и исходящую фазы
+                var зПереход = Query(
+                   ` DECLARE @ticket int SET @ticket  = :1
+                     DECLARE @work int SET @work  = :2
+                     DECLARE @stage int SET @stage  = :3
+                      SELECT TOP 1 *
+                        FROM ~ДО переходы~
+                       WHERE [Фаза-Выход] = @stage AND [Фаза-Вход] in
+                            ( SELECT dz.[Задание-Фаза]
+                                FROM ~ДО Задания~ dz
+                               WHERE dz.[Задание-Карточка] = @ticket
+                                AND dz.Подзадания = -1 AND dz.ROW_ID < @work ) `, 1, 'ticket,S,work,S,stage,S' );
+                зПредыдущаяРабота.УстановитьПараметры( this.Работа.Заявка.НомерЗаписи, this.Работа.НомерЗаписи );
+                while( зПредыдущаяРабота.Следующий() ) {
+                    зПереход.УстановитьПараметры(this.Работа.Заявка.НомерЗаписи, зПредыдущаяРабота.workID
+                        , зПредыдущаяРабота.stage_ID);
+                    while (зПереход.Следующий()) {
+                        var нзПереход = String(зПереход.ROW_ID);
+                        this._Переходы[нзПереход] = new кПереход(зПереход.ROW_ID, зПереход, this);
+                        this._Переходы[нзПереход].Объект.Название = "Вернуть на " + зПредыдущаяРабота.stage_name;
+                        this._Переходы[нзПереход].НомерЗаписи = зПереход.ROW_ID;
+                        this._Переходы[нзПереход]._Исполнитель = {};
+                        this._Переходы[нзПереход]._Исполнитель.нзОрганизация = зПредыдущаяРабота.chl_orgID;
+                        this._Переходы[нзПереход]._Исполнитель.Организация
+                            = СвойствоОрганизации(зПредыдущаяРабота.chl_orgID, "ОК");
+                        this._Переходы[нзПереход]._Исполнитель.нзПредставитель = зПредыдущаяРабота.chL_ID;
+                        this._Переходы[нзПереход]._Исполнитель.нзСотрудник = зПредыдущаяРабота.st_ID;
+                        this._Переходы[нзПереход]._Исполнитель.Сотрудник = зПредыдущаяРабота.st_FIO;
+                        this._Переходы[нзПереход]._Исполнитель.Представитель = зПредыдущаяРабота.chl_FIO;
+                        // Что бы не давать выбрать исполнителя
+                        this._Переходы[нзПереход].ТребуетИсполнителя = false;
+                    }
+                }
+            }
+        }
+        return this._Переходы;
     }
     ЗаполнитьКатегорию() {
         var зКатегория = Query( `SELECT * FROM ~ДО категории фаз~ WHERE ROW_ID = :1 `, 1, "rID,S" );
-        зКатегория.УстановитьПараметры( this.НомерЗаписи );
-        while( зКатегория.Следующий() ){
-            this.ДанныеКатегории['Название']        = зКатегория.Название;
-            this.ДанныеКатегории['Автовыполнение']  = зКатегория.Автовыполнение;
-            this.ДанныеКатегории['Цвет']            = зКатегория.Цвет;
+        зКатегория.УстановитьПараметры( this.Объект['Фаза-Категория'] );
+        if( зКатегория.Следующий() ){
+            this.ДанныеКатегории = {
+                Название: зКатегория.Название,
+                Автовыполнение: зКатегория.Автовыполнение,
+                Цвет: зКатегория.Цвет
+            };
         }
     }
     Проинициализировать(){
-        if( !this.НомерЗаписи ){
-            throw  new StackError( "Невозможно инициализировать фазу с номером записи " + this.НомерЗаписи );
-        }
-        this.ЗаполнитьПереходы();
         this.ЗаполнитьКатегорию();
         this.Номер = this.Объект.Номер;
-        //todo переделать. Поля Срок нет в объекте!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //if( ЕстьСвойство(this.Объект, "Срок") != 1 )
-        //    Сообщить( "todo переделать. Поля Срок нет в объекте!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
-        //this.Срок = this.Объект.Срок;
+        this.Срок = this.Объект['План в часах'];
         this.Автовыполнение = this.Объект.Автовыполнение;
         this.ПереходПриУспехе = this.Объект.СледующийНомер;
-
         this.Автозавершение = this.Объект["Автоматическое завершение"] ? true : false;
         this.АвтозавершениеДней = this.Объект["Авт_зав_дней"];
         this.АвтозавершениеПредупреждение = this.Объект["Авт_зав_дней"];
         this.АвтозавершениеФаза = this.Объект["Авт_переход"];
-        //this.Комментарий = this.Объект.Комментарий;
+        this.Комментарий = this.Объект.Авт_коммент;
         this.ИсполнительПоУмолчанию = this.Объект["Исполнитель по умолчанию"];
         this.ВыбратьПредыдущуюФазуиИсполнителя = this.Объект["УказатьПредФазу"] ? true : false;
         this.ПоследнийШаг =  this.Объект["Последний шаг"] ? true : false;
         this.ОбязателенКомментарий = this.Объект["Обязателен комментарий"] ? true : false;
     }
-}
-class ПраваСотрудниковДО {
-    /**
-     * // Проверяет входит ли пользователь в определённые группы пользователей
-     * // Если входит в любую из предложенных то возвращает 1, иначе 0
-     * @param _пользователь позиция Сотрудника = НомерЗаписи( Пользователь() )
-     * *@param() _пользователь Далее можно перечислять названия групп (допустимо указание не полностью)
-     * @returns {*}
-     */
-    static ПроверкаПравСотрудника(_пользователь) {
-        var зПольз = Query(`SELECT TOP 1 pr.ROW_ID
-                          FROM ~Права~ pr JOIN ~Группы~ gr ON pr.[Группы-Права]=gr.ROW_ID
-                          WHERE [Пользователи-Права] = SOME(SELECT ROW_ID FROM ~Пользователи~
-                                                        WHERE [Номер]=(SELECT [ТабНомер] FROM ~Сотрудники~ WHERE row_id = :1)
-                                ) AND gr.[Название] LIKE :2`, 10, "User,S,Group,A");
-        var ВходитВГруппы = 0;
-        for (let i = 0; i < arguments.length; i++) {
-            зПольз.УстановитьПараметры(_пользователь, "%" + arguments[i] + "%");
-            ВходитВГруппы += зПольз.Следующий() ? 1 : 0;
-        }
-        return Math.min(ВходитВГруппы, 1);
+    Очистить(){
+        this._Шаблоны = undefined;
+        this._Переходы = undefined;
     }
 }
-
+/**
+ * @class ПраваДО
+ */
+class ПраваДО {
+    /**
+     * возращает true, если указанное право разрешено для пользователя
+     * @param право {Number|String} - проверяемое право пользователя
+     * @returns {boolean|*} - true, если указанное право разрешено
+     */
+    static Разрешено( право ){
+        var разрешение = 0x0;
+        var права = УказанноеПравоНаРесурс( "Документооборот" );
+        if( typeof право == 'string' ) {
+            switch( право.toLowerCase() ){
+                case 'завершатьчужиезадания':
+                    разрешение = 0x1;
+                    break;
+                case 'созданиесертификатов':
+                    разрешение = 0x2;
+                    break;
+                case 'созданиеftp':
+                    разрешение = 0x4;
+                    break;
+                case 'модераторыbugtracker':
+                    разрешение = 0x8;
+                    break;
+                case 'руководитель':
+                    разрешение = 0x10;
+                    break;
+            }
+        }
+        else if ( typeof право == 'number' ) {
+            разрешение = право
+        } else throw new StackError( 'Передан неврный тип аргумента при проверке прав сотрудника' );
+        // возвращаем с проверкой на супервизора, т.к. Права для него всегда 0!
+        return (права & разрешение) > 0 || Супервизор();
+    }
+}
+/**
+ * @class кМессенджер @extends БазовыйОбъект
+ */
 class кМессенджер extends БазовыйОбъект {
     /**
      * @param тип - тип сообщения
@@ -2019,7 +2104,7 @@ class кМессенджер extends БазовыйОбъект {
         switch( this.Тип ) {
             case 1: // Текущий пользователь посылает новому исполнителю задание
                 if( кому != -1 ) рез = this.Добавить( кому, сообщение, тема, названиеРаботы );
-                if( пользователь != исполнитель ) { // Текущий пользователь снял с текущего исполнителя задание
+                if( пользователь != исполнитель && кому != исполнитель ) { // Текущий пользователь снял с текущего исполнителя задание
                     this.Тип = 3;
                     рез = this.Добавить( исполнитель );
                 }
@@ -2053,7 +2138,7 @@ class кМессенджер extends БазовыйОбъект {
         var номерЗаявки = this.Заявка ? this.Заявка.Объект.Номер : '';
         var заказчик = this.Заявка ? this.Заявка.Объект['Карточка-Организация>Название'] : '';
         var сегодня = new Date();
-        this.ПрочитатьИзКонтекста( { 'ВремяЗаписи' : сегодня.format( "rusDateTime" ),
+        this.ПрочитатьИзКонтекста( { 'ВремяЗаписи' : сегодня,
             'Пользователь' : кому,
             'ТипСообщения' : this.Тип,
             'ОтКого' : отКого,
@@ -2064,7 +2149,12 @@ class кМессенджер extends БазовыйОбъект {
             'НазваниеРаботы' : названиеРаботы,
             'Просмотрено' : 0
         } );
-        return this.Внести();
+        var нзНовоеСообщение = this.Внести();
+        // TODO криво сделан мессенджер, стек не умеет работать с datateme
+        var кОбновитьВремя = Command( ` UPDATE ~ДО сообщения~ SET [ВремяЗаписи] = getDate() WHERE ROW_ID = :1 `, 1, "rID,S" );
+        кОбновитьВремя.Выполнить( нзНовоеСообщение );
+        кОбновитьВремя.Завершить();
+        return нзНовоеСообщение;
     }
 }
 
@@ -2105,10 +2195,11 @@ class АвтоматическиеДействия {
                     var Уведомление = new АвтоматическиеДействия( зТекРаб.ROW_ID );
                     ВывестиСтатус("Закрытие заявок: " + Уведомление.Работа.Заявка.Объект.Номер);
                     // todo может метод по созданию перехода у Работы, чтобы не думать о нзИсполнитель?
+                    Сообщить("Изменить завершение")
                     Уведомление.Работа.Переход = new кПереход(зТекРаб.ИдФазаПереход);
                     Уведомление.Работа.Переход.ПараметрыПерехода.нзИсполнитель = НомерЗаписи(Пользователь());
                     Уведомление.Работа.Переход.ПараметрыПерехода.Комментарий = зФазыАвт.Авт_коммент.trim();
-                    Уведомление.Работа.Завершить( true );
+                    Уведомление.Работа.Завершить();
 
                     Уведомление.ОтправитьУведомление();
                     if (зФазыАвт.Авт_завершение_ф_ия) {
@@ -2264,5 +2355,150 @@ class АвтоматическиеДействия {
             Текст = Текст.replaceAll( мПодстановки[i].Поле,мПодстановки[i].Значение );
         }
         return Текст;
+    }
+}
+
+class ДанныеЗвонка {
+    constructor() {
+
+    }
+
+    Ввести() {
+        this.длгДанныеЗвонка = СоздатьДиалог("Данные звонка");
+        var пРезультат = this.ЗаполнитьВыборкуПоЗвонку();
+        if (!пРезультат) return -1;
+        if (пРезультат == 0) {
+            длгДанныеЗвонка.Выполнить();
+            return 1;
+        }
+        if (пРезультат > 0) {
+
+            ДанныеЗвонка_ПоказатьДанныеПоОрганизации(пРезультат);
+            return 1;
+        }
+        if (пРезультат < 0) {
+            var оСотрудники = Объект("Сотрудники");
+            ПрочитатьЗаписьТаблицы(оСотрудники, пРезультат * ( -1 ));
+            оСотрудники.Редактировать("&Сотрудник");
+            return 1;
+        }
+    }
+
+    ЗаполнитьВыборкуПоЗвонку() {
+        var пИмяВыборкиЗвонка = "Данные звонка";
+        var вДанныеПоЗвонку = new БазоваяВыборка(пИмяВыборкиЗвонка);
+        вДанныеПоЗвонку.Очистить();
+        var мРезультат = ПолучитьДанныеЗвонка();
+        this.длгДанныеЗвонка.Заголовок = "Входящий вызов с номера " + мРезультат.Номер;
+        if (!мРезультат.length) {
+            Сообщить("Нет данных по звонку");
+            return "";
+        }
+        if (!мРезультат.мОрг.length && !мРезультат.мСотр.length) {
+            Сообщить("Нет данных по звонку");
+            return "";
+        }
+        var зОрганизации = query(`SELECT Наименование FROM ~Организации~ WHERE ROW_ID = :1`, 10, "rID,S");
+        var зЧастныеЛица = query(`SELECT ФИО, Должность FROM ~Частные лица~ WHERE ROW_ID = :1`, 10, "rID,S");
+        var зСотрудники = query(`SELECT ФИО, ФлагВнедр FROM ~Сотрудники~ WHERE ROW_ID = :1`, 10, "rID,S");
+        var пДанныеНайдены = 0;
+        var пИД;
+        var нзКарточки = -1;
+        for (let пИД in мРезультат.мОрг) {
+            if (!мРезультат.мОрг.hasOwnProperty(пИД)) continue;
+            зОрганизации.УстановитьПараметры(мРезультат.мОрг[пИД]);
+            while (зОрганизации.Следующий()) {
+                нзКарточки = мРезультат.мОрг[пИД];
+                вДанныеПоЗвонку.ROW_ID_org = мРезультат.мОрг[пИД];
+                вДанныеПоЗвонку.ROW_ID_sotr = -1;
+                вДанныеПоЗвонку.ФИО = "";
+                вДанныеПоЗвонку.Должность = "";
+                вДанныеПоЗвонку.Организация = зОрганизации.Наименование;
+                зЧастныеЛица.УстановитьПараметры(пИД);
+                while (зЧастныеЛица.Следующий()) {
+                    вДанныеПоЗвонку.ФИО = зЧастныеЛица.ФИО;
+                    вДанныеПоЗвонку.Должность = зЧастныеЛица.Должность;
+                    ВнестиЗапись(вДанныеПоЗвонку);
+                    пДанныеНайдены++;
+                }
+                if (пИД < 0) {
+                    пДанныеНайдены++;
+                    ВнестиЗапись(вДанныеПоЗвонку);
+                }
+            }
+        }
+        вДанныеПоЗвонку.Перенабрать();
+        if (пДанныеНайдены == 1) return нзКарточки;
+        пДанныеНайдены = 0;
+        for (let пИд in мРезультат.мСотр) {
+            нзКарточки = пИД * ( -1 );
+            вДанныеПоЗвонку.ROW_ID_org = -1;
+            вДанныеПоЗвонку.ROW_ID_sotr = пИД;
+            вДанныеПоЗвонку.Организация = Лицо0().Наименование;
+            вДанныеПоЗвонку.ФИО = "";
+            вДанныеПоЗвонку.Должность = "";
+            зСотрудники.УстановитьПараметры(пИД);
+            while (зСотрудники.Следующий()) {
+                вДанныеПоЗвонку.ФИО = зСотрудники.ФИО;
+                вДанныеПоЗвонку.Должность = ДанныеЗвонка_ВернутьДолжностьСотрудникаСтек(зСотрудники.ФлагВнедр);
+                ВнестиЗапись(вДанныеПоЗвонку);
+                пДанныеНайдены++;
+            }
+            if (пДанныеНайдены == 0)ВнестиЗапись(вДанныеПоЗвонку);
+        }
+        вДанныеПоЗвонку.Перенабрать();
+        if (пДанныеНайдены == 1)return нзКарточки;
+        return 0;
+    }
+}
+/**
+ * Проведение опроса у пользователей при старте комплекса
+ * @class кПровестиОпрос
+ */
+class кПровестиОпрос{
+    constructor(){
+        this.Пользователь = НомерЗаписи( Пользователь() );
+        this.ИмяДиалогаОпроса = "ДО опросы вопрос сотруднику";
+    }
+    Опросить(){
+        var зОпросы = BufferedReader(
+            ` SELECT dov.[ROW_ID],dov.[Номер],dov.[Варианты],dov.[Комментарий],dov.[Название]
+                FROM ~ДО опросы вопросы~ dov
+           LEFT JOIN ~ДО опросы ответы~ doo ON dov.ROW_ID = doo.[До ответы-Вопросы] AND doo.[До ответы-Сотрудник] = :1
+           WHERE dov.Папки_ADD = 1 AND doo.ROW_ID IS NULL AND :2 BETWEEN dov.ДатНач AND dov.ДатКнц `, 100, "IDS,S,rDate,D" );
+        зОпросы.УстановитьПараметры( this.Пользователь, new Date() );
+        var длгВопросСотруднику, Ответы, кВнестиОтвет, ВсегоОтветов, НомерОтвета, ТекстОтвета ;
+        while( зОпросы.Следующий() ) {
+            if (!длгВопросСотруднику) {
+                длгВопросСотруднику = СоздатьДиалог(this.ИмяДиалогаОпроса);
+                this.ЭлСписокСостояний = ListBox(this.ИмяДиалогаОпроса, "СписокОтветов");
+            }
+            длгВопросСотруднику.Заголовок = "Опрос: " + зОпросы.Номер + " " + зОпросы.Название;
+            длгВопросСотруднику['@Комментарий'] = зОпросы.Комментарий;
+            длгВопросСотруднику['@Дополнение'] = "";
+            this.ЭлСписокСостояний.Очистить();
+            Ответы = зОпросы.Варианты.split("\n");
+            for (let Ответ of Ответы) {
+                if (Ответ.length) this.ЭлСписокСостояний.Добавить(Ответ);
+            }
+            if (длгВопросСотруднику.Выполнить()) {
+                if (!кВнестиОтвет) {
+                    кВнестиОтвет = Command(
+                        ` INSERT INTO ~ДО опросы ответы~
+                        ( [До ответы-Вопросы], [До ответы-Сотрудник], ВариантНомер, ВариантТекст, Комментарий, Дата, Время )
+                        VALUES( :1, :2, :3, :4, :5, getdate(), getdate() ) `, 10, "vID,S,stID,S,NO,S,TO,A,KO,A");
+                }
+                ВсегоОтветов = this.ЭлСписокСостояний.Количество;
+                while( --ВсегоОтветов >= 0 ){
+                    if( this.ЭлСписокСостояний.Помечен[ВсегоОтветов]  ){
+                        НомерОтвета = ВсегоОтветов + 1;
+                        ТекстОтвета = this.ЭлСписокСостояний.Элементы[ВсегоОтветов];
+                    }
+                }
+                кВнестиОтвет.Выполнить(зОпросы.ROW_ID, this.Пользователь, НомерОтвета, ТекстОтвета, длгВопросСотруднику['@Дополнение']);
+            }
+        }
+        if( кВнестиОтвет ) кВнестиОтвет.Завершить();
+        СобратьМусор();
     }
 }
